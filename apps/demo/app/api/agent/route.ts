@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
 import { streamAgentEvents, getOrCreateAgent } from '@/lib/agent'
-import { getSession } from '@gossipay/sdk'
+import { getSession, getPendingApproval } from '@gossipay/sdk'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -22,6 +22,19 @@ async function* sseEvents(sessionId: string, message: string) {
       for (const tx of newTxs) {
         yield { event: 'transaction', data: tx }
       }
+      const pendingApprovals = session.pendingApprovals.filter(
+        (a) => a.status === 'pending'
+      )
+      for (const approval of pendingApprovals) {
+        yield { event: 'pending_approval', data: approval }
+      }
+    }
+  }
+
+  const session = getSession()
+  for (const approval of session.pendingApprovals) {
+    if (approval.status === 'pending') {
+      yield { event: 'pending_approval', data: approval }
     }
   }
 }

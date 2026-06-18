@@ -1,9 +1,11 @@
 import { ChatAnthropic } from '@langchain/anthropic'
+import { ChatOpenAI } from '@langchain/openai'
 import { MemorySaver } from '@langchain/langgraph'
 import { createReactAgent } from '@langchain/langgraph/prebuilt'
 import { GossipayWallet } from '@gossipay/sdk'
 import { createHederaClient } from './hedera'
 import type { BaseMessage } from '@langchain/core/messages'
+import type { BaseChatModel } from '@langchain/core/language_models/chat_models'
 
 interface AgentInstance {
   agent: ReturnType<typeof createReactAgent>
@@ -12,6 +14,24 @@ interface AgentInstance {
 }
 
 const agentStore = new Map<string, AgentInstance>()
+
+function createLLM(): BaseChatModel {
+  const provider = process.env.LLM_PROVIDER ?? 'openai'
+
+  if (provider === 'anthropic') {
+    return new ChatAnthropic({
+      model: process.env.ANTHROPIC_MODEL ?? 'claude-sonnet-4-6',
+      temperature: 0,
+      apiKey: process.env.ANTHROPIC_API_KEY,
+    })
+  }
+
+  return new ChatOpenAI({
+    model: process.env.OPENAI_MODEL ?? 'gpt-4o',
+    temperature: 0,
+    apiKey: process.env.OPENAI_API_KEY,
+  })
+}
 
 function createAgentInstance(sessionId: string): AgentInstance {
   const client = createHederaClient()
@@ -34,11 +54,7 @@ function createAgentInstance(sessionId: string): AgentInstance {
     auditTopicId: process.env.HEDERA_HCS_TOPIC_ID,
   })
 
-  const llm = new ChatAnthropic({
-    model: 'claude-sonnet-4-6',
-    temperature: 0,
-    apiKey: process.env.ANTHROPIC_API_KEY,
-  })
+  const llm = createLLM()
 
   const tools = wallet.getTools()
   const memory = new MemorySaver()
@@ -61,6 +77,12 @@ export function getOrCreateAgent(sessionId: string): AgentInstance {
     agentStore.set(sessionId, createAgentInstance(sessionId))
   }
   return agentStore.get(sessionId)!
+}
+
+export function updateAgentPolicies(sessionId: string, configs: any[]): void {
+  const instance = agentStore.get(sessionId)
+  if (!instance) return
+  instance.wallet.updatePolicies(configs)
 }
 
 export function getSessionMessages(sessionId: string): BaseMessage[] {

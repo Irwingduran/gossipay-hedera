@@ -19,6 +19,10 @@ export class SpendLimitPolicy extends AbstractPolicy {
     super()
   }
 
+  updateConfig(config: SpendLimitConfig): void {
+    this.config = config
+  }
+
   async shouldBlockPostParamsNormalization(
     params: any,
     _method: string

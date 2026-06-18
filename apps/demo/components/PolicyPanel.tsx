@@ -1,5 +1,6 @@
 'use client'
 
+import { useCallback, useRef } from 'react'
 import { useSession } from '@/lib/store'
 import type { SpendLimitConfig, AllowListConfig, RequireApprovalConfig, PolicyConfig } from '@gossipay/sdk'
 
@@ -15,8 +16,30 @@ function isRequireApproval(c: PolicyConfig): c is RequireApprovalConfig {
   return 'aboveAmount' in c
 }
 
+function useDebounceSync() {
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const sync = useCallback((sessionId: string, policies: PolicyConfig[]) => {
+    if (timer.current) clearTimeout(timer.current)
+    timer.current = setTimeout(async () => {
+      try {
+        await fetch('/api/policies', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ sessionId, policies }),
+        })
+      } catch {
+        // silently fail — policies still work locally
+      }
+    }, 600)
+  }, [])
+
+  return sync
+}
+
 export function PolicyPanel() {
   const { state, dispatch } = useSession()
+  const syncPolicies = useDebounceSync()
 
   const spendCfg = state.policies.find(isSpendLimit)
   const allowCfg = state.policies.find(isAllowList)
@@ -26,6 +49,7 @@ export function PolicyPanel() {
     const next = [...state.policies]
     next[index] = updated
     dispatch({ type: 'SET_POLICIES', payload: next })
+    syncPolicies(state.sessionId, next)
   }
 
   return (

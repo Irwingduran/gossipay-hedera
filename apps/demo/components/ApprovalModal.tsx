@@ -1,21 +1,51 @@
 'use client'
 
+import { useState } from 'react'
 import { useSession } from '@/lib/store'
+import { useAgentStream } from '@/lib/hooks/useAgentStream'
 
 export function ApprovalModal() {
   const { state, dispatch } = useSession()
+  const { sendMessage, isStreaming } = useAgentStream()
+  const [loadingId, setLoadingId] = useState<string | null>(null)
+
   const pending = state.pendingApprovals.filter((a) => a.status === 'pending')
 
   if (pending.length === 0) return null
 
   const latest = pending[pending.length - 1]
 
-  const handleApprove = () => {
-    dispatch({ type: 'UPDATE_APPROVAL', payload: { id: latest.id, status: 'approved' } })
-  }
+  const handleAction = async (action: 'approved' | 'rejected') => {
+    setLoadingId(latest.id)
+    try {
+      const res = await fetch('/api/approve', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ approvalId: latest.id, action }),
+      })
 
-  const handleReject = () => {
-    dispatch({ type: 'UPDATE_APPROVAL', payload: { id: latest.id, status: 'rejected' } })
+      if (!res.ok) {
+        const data = await res.json()
+        throw new Error(data.error ?? 'Failed to process approval')
+      }
+
+      dispatch({
+        type: 'UPDATE_APPROVAL',
+        payload: { id: latest.id, status: action },
+      })
+
+      if (action === 'approved') {
+        setTimeout(() => {
+          sendMessage(
+            `The transaction for ${latest.amount} HBAR to ${latest.provider} was approved. Please retry and complete it.`
+          )
+        }, 500)
+      }
+    } catch (err: any) {
+      console.error('Approval error:', err)
+    } finally {
+      setLoadingId(null)
+    }
   }
 
   return (
@@ -43,16 +73,18 @@ export function ApprovalModal() {
         </div>
         <div className="flex border-t border-neutral-100 divide-x divide-neutral-100">
           <button
-            onClick={handleReject}
-            className="flex-1 py-3 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
+            onClick={() => handleAction('rejected')}
+            disabled={loadingId === latest.id}
+            className="flex-1 py-3 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors disabled:opacity-40"
           >
             Reject
           </button>
           <button
-            onClick={handleApprove}
-            className="flex-1 py-3 text-sm font-medium text-green-600 hover:bg-green-50 transition-colors"
+            onClick={() => handleAction('approved')}
+            disabled={loadingId === latest.id}
+            className="flex-1 py-3 text-sm font-medium text-green-600 hover:bg-green-50 transition-colors disabled:opacity-40"
           >
-            Approve
+            {loadingId === latest.id ? 'Processing…' : 'Approve'}
           </button>
         </div>
       </div>

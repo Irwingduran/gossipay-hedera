@@ -22,6 +22,10 @@ export class RequireApprovalPolicy extends AbstractPolicy {
     super()
   }
 
+  updateConfig(config: RequireApprovalConfig): void {
+    this.config = config
+  }
+
   async shouldBlockPostParamsNormalization(
     params: any,
     method: string

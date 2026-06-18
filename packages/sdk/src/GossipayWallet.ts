@@ -1,7 +1,7 @@
 import { Client } from '@hashgraph/sdk'
 import { HederaLangchainToolkit } from '@hashgraph/hedera-agent-kit-langchain'
 import { AbstractHook } from '@hashgraph/hedera-agent-kit'
-import type { GossipayWalletConfig, SpendLimitConfig, AllowListConfig, RequireApprovalConfig } from './types'
+import type { GossipayWalletConfig, SpendLimitConfig, AllowListConfig, RequireApprovalConfig, PolicyConfig } from './types'
 import { SpendLimitPolicy } from './policies/spendLimit'
 import { AllowListPolicy } from './policies/allowList'
 import { RequireApprovalPolicy } from './policies/requireApproval'
@@ -73,5 +73,17 @@ export class GossipayWallet {
 
   getAuditLogger(): HcsAuditLogger {
     return this.auditLogger
+  }
+
+  updatePolicies(configs: PolicyConfig[]): void {
+    for (const cfg of configs) {
+      if ('maxPerTransaction' in cfg) {
+        this.policies.spendLimit.updateConfig(cfg)
+      } else if ('providers' in cfg) {
+        this.policies.allowList.updateConfig(cfg)
+      } else if ('aboveAmount' in cfg) {
+        this.policies.requireApproval.updateConfig(cfg)
+      }
+    }
   }
 }

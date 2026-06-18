@@ -16,12 +16,15 @@ export function useAgentStream() {
     async (message: string) => {
       const sessionId = state.sessionId
 
-      dispatch({ type: 'ADD_MESSAGE', payload: {
-        id: crypto.randomUUID(),
-        role: 'user',
-        content: message,
-        timestamp: Date.now(),
-      }})
+      dispatch({
+        type: 'ADD_MESSAGE',
+        payload: {
+          id: crypto.randomUUID(),
+          role: 'user',
+          content: message,
+          timestamp: Date.now(),
+        },
+      })
 
       dispatch({ type: 'SET_STREAMING', payload: true })
       dispatch({ type: 'SET_ERROR', payload: null })
@@ -29,12 +32,15 @@ export function useAgentStream() {
       const assistantMessageId = crypto.randomUUID()
       let assistantContent = ''
 
-      dispatch({ type: 'ADD_MESSAGE', payload: {
-        id: assistantMessageId,
-        role: 'assistant',
-        content: '',
-        timestamp: Date.now(),
-      }})
+      dispatch({
+        type: 'ADD_MESSAGE',
+        payload: {
+          id: assistantMessageId,
+          role: 'assistant',
+          content: '',
+          timestamp: Date.now(),
+        },
+      })
 
       const controller = new AbortController()
       abortRef.current = controller
@@ -80,7 +86,10 @@ export function useAgentStream() {
         }
       } catch (err: any) {
         if (err.name !== 'AbortError') {
-          dispatch({ type: 'SET_ERROR', payload: err.message ?? 'Connection failed' })
+          dispatch({
+            type: 'SET_ERROR',
+            payload: err.message ?? 'Connection failed',
+          })
         }
       } finally {
         dispatch({ type: 'SET_STREAMING', payload: false })
@@ -91,19 +100,21 @@ export function useAgentStream() {
         switch (ev.event) {
           case 'token':
             assistantContent += ev.data.content ?? ''
-            dispatch({ type: 'ADD_MESSAGE', payload: {
-              id: assistantMessageId,
-              role: 'assistant',
-              content: assistantContent,
-              timestamp: Date.now(),
-            }})
+            dispatch({
+              type: 'ADD_MESSAGE',
+              payload: {
+                id: assistantMessageId,
+                role: 'assistant',
+                content: assistantContent,
+                timestamp: Date.now(),
+              },
+            })
             break
           case 'transaction':
             dispatch({ type: 'ADD_TRANSACTION', payload: ev.data })
             break
-          case 'tool_start':
-            break
-          case 'tool_end':
+          case 'pending_approval':
+            dispatch({ type: 'ADD_APPROVAL', payload: ev.data })
             break
           case 'done':
             break
@@ -120,5 +131,10 @@ export function useAgentStream() {
     abortRef.current?.abort()
   }, [])
 
-  return { sendMessage, cancel, isStreaming: state.isStreaming, error: state.error }
+  return {
+    sendMessage,
+    cancel,
+    isStreaming: state.isStreaming,
+    error: state.error,
+  }
 }

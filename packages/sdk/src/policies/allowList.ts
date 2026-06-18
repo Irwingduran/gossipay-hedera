@@ -16,6 +16,10 @@ export class AllowListPolicy extends AbstractPolicy {
     super()
   }
 
+  updateConfig(config: AllowListConfig): void {
+    this.config = config
+  }
+
   async shouldBlockPostParamsNormalization(
     params: any,
     _method: string
