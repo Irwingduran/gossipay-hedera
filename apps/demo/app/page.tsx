@@ -187,6 +187,106 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ───── Telegram Bot ───── */}
+      <section className="px-6 py-24 border-t border-neutral-100 bg-neutral-50/50">
+        <div className="max-w-5xl mx-auto">
+          <p className="text-xs font-medium text-neutral-400 uppercase tracking-widest mb-4">
+            Telegram
+          </p>
+          <h2 className="font-serif text-3xl sm:text-4xl text-neutral-900 leading-tight">
+            Your agents on the go
+          </h2>
+          <p className="mt-3 text-neutral-500 max-w-2xl">
+            gossipay ships with a production-ready Telegram bot. Each chat gets an
+            isolated agent session with its own wallet, policies, and conversation
+            history — the same stack as the web demo, accessible from your phone.
+          </p>
+          <div className="mt-10 grid sm:grid-cols-3 gap-6">
+            <div className="border border-neutral-200 bg-white rounded-xl p-6">
+              <a
+                href="https://t.me/gossipay_bot"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 mb-4"
+              >
+                <span className="w-10 h-10 rounded-lg bg-sky-100 flex items-center justify-center text-lg">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="#0284c7">
+                    <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+                  </svg>
+                </span>
+                <div>
+                  <h3 className="text-sm font-semibold text-neutral-900">@gossipay_bot</h3>
+                  <p className="text-xs text-neutral-400">Start chatting now</p>
+                </div>
+              </a>
+              <ul className="space-y-2">
+                {[
+                  'Isolated agent per Telegram chat',
+                  'Same policies, wallet & audit trail',
+                  '/status, /reset, and free-form messages',
+                  'Works with any LLM (OpenAI / Anthropic)',
+                ].map((f) => (
+                  <li key={f} className="flex items-start gap-2 text-xs text-neutral-500">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-green-500 shrink-0 mt-0.5">
+                      <path d="M20 6 9 17l-5-5" />
+                    </svg>
+                    {f}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="border border-neutral-200 bg-white rounded-xl p-6">
+              <h3 className="text-sm font-semibold text-neutral-900 mb-3">Architecture</h3>
+              <pre className="text-[11px] font-mono text-neutral-600 leading-relaxed whitespace-pre">
+{`apps/bot/
+├── src/
+│   ├── index.ts    # Telegraf + polling
+│   ├── agent.ts    # Agent per chat_id
+│   └── env.ts      # Env validation
+└── package.json`}
+              </pre>
+              <p className="mt-3 text-xs text-neutral-500">
+                Reuses <code className="text-neutral-800 bg-neutral-100 px-1 rounded">@gossipay/sdk</code> — same wallet, policies, and hooks as the web demo.
+              </p>
+            </div>
+            <div className="border border-neutral-200 bg-white rounded-xl p-6">
+              <h3 className="text-sm font-semibold text-neutral-900 mb-3">Quick start</h3>
+              <pre className="text-[11px] font-mono text-green-700 bg-green-50 border border-green-100 rounded px-2 py-1.5 overflow-x-auto"><code>TELEGRAM_BOT_TOKEN=xxx pnpm --filter @gossipay/bot dev</code></pre>
+              <ul className="mt-3 space-y-2">
+                {[
+                  'Set TELEGRAM_BOT_TOKEN in .env',
+                  'Run with tsx watch (hot reload)',
+                  'Built on Telegraf 4',
+                ].map((f) => (
+                  <li key={f} className="flex items-start gap-2 text-xs text-neutral-500">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-green-500 shrink-0 mt-0.5">
+                      <path d="M20 6 9 17l-5-5" />
+                    </svg>
+                    {f}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ───── Floating Telegram button ───── */}
+      <a
+        href="https://t.me/gossipay_bot"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-sky-500 hover:bg-sky-400 text-white shadow-lg hover:shadow-xl transition-all flex items-center justify-center group"
+        aria-label="Chat on Telegram"
+      >
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+        </svg>
+        <span className="absolute right-16 top-1/2 -translate-y-1/2 whitespace-nowrap text-xs font-medium text-white bg-neutral-900 px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+          Chat on Telegram
+        </span>
+      </a>
+
       {/* ───── Enterprise features ───── */}
       <section className="px-6 py-24 border-t border-neutral-100">
         <div className="max-w-5xl mx-auto">

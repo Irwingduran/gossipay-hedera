@@ -2,7 +2,7 @@ node_modules/
 dist/
 .next/
 turbo/
-docs/
+/docs/
 .env
 .env.local
 *.log
