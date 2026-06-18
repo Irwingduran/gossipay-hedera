@@ -4,6 +4,26 @@ import { NetworkDiagram } from '@/components/NetworkDiagram'
 export default function Home() {
   return (
     <>
+      {/* ───── Navbar ───── */}
+      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-neutral-100 bg-white/80 backdrop-blur-sm">
+        <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
+          <Link href="/" className="font-serif text-lg tracking-tight text-neutral-900">
+            gossipay
+          </Link>
+          <div className="flex items-center gap-6">
+            <Link href="/docs" className="text-sm text-neutral-500 hover:text-neutral-800 transition-colors">
+              Docs
+            </Link>
+            <Link
+              href="/demo"
+              className="text-sm font-medium text-white bg-neutral-900 px-4 py-1.5 rounded-lg hover:bg-neutral-800 transition-colors"
+            >
+              Demo
+            </Link>
+          </div>
+        </div>
+      </nav>
+
       {/* ───── Hero ───── */}
       <section className="min-h-screen flex items-center px-6 py-24">
         <div className="max-w-6xl mx-auto w-full grid lg:grid-cols-2 gap-16 items-center">
