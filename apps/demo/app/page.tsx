@@ -1,64 +1,300 @@
 import Link from 'next/link'
+import { NetworkDiagram } from '@/components/NetworkDiagram'
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center px-6">
-      <div className="max-w-2xl mx-auto text-center">
-        <h1 className="font-serif text-5xl sm:text-6xl tracking-tight text-neutral-900">
-          gossipay
-        </h1>
-        <p className="mt-6 text-base sm:text-lg text-neutral-500 leading-relaxed">
-          The programmable economic layer for autonomous AI agents.
-          <br />
-          Built on{' '}
-          <span className="text-neutral-800">Hedera</span>.
-        </p>
-
-        <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Link
-            href="/demo"
-            className="inline-flex items-center px-6 py-3 text-sm font-medium text-white bg-neutral-900 rounded-lg hover:bg-neutral-800 transition-colors"
-          >
-            Launch demo
-          </Link>
-          <a
-            href="https://github.com/Irwingduran/gossipay-hedera"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center px-6 py-3 text-sm font-medium text-neutral-600 border border-neutral-200 rounded-lg hover:border-neutral-300 hover:text-neutral-800 transition-colors"
-          >
-            View on GitHub
-          </a>
-        </div>
-
-        <div className="mt-24 grid grid-cols-1 sm:grid-cols-3 gap-8 text-left">
-          <div className="border border-neutral-100 rounded-lg p-5">
-            <h3 className="font-serif text-lg text-neutral-900">Policy engine</h3>
-            <p className="mt-2 text-sm text-neutral-500 leading-relaxed">
-              Configurable guardrails — spend limits, allow lists, and human
-              approval thresholds.
+    <>
+      {/* ───── Hero ───── */}
+      <section className="min-h-screen flex items-center px-6 py-24">
+        <div className="max-w-6xl mx-auto w-full grid lg:grid-cols-2 gap-16 items-center">
+          <div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 mb-8 text-xs text-neutral-500 bg-neutral-50 border border-neutral-200 rounded-full">
+              <span className="w-1.5 h-1.5 bg-purple-800 rounded-full animate-pulse" />
+              Hedera
+            </div>
+            <h1 className="font-serif text-5xl sm:text-6xl lg:text-7xl tracking-tight text-neutral-900 leading-[1.05]">
+              The agent commerce
+              <br />
+              <span className="text-neutral-400">network</span>
+            </h1>
+            <p className="mt-6 text-base sm:text-lg text-neutral-500 leading-relaxed max-w-lg">
+              Deploy autonomous AI agents with programmable wallets,
+              configurable policies, and immutable audit trails on{' '}
+              <span className="text-neutral-800 font-medium">Hedera</span>.
             </p>
+            <div className="mt-8 flex flex-col sm:flex-row items-start gap-4">
+              <Link
+                href="/demo"
+                className="inline-flex items-center gap-2 px-6 py-3 text-sm font-medium text-white bg-neutral-900 rounded-lg hover:bg-neutral-800 transition-colors shadow-sm"
+              >
+                Launch demo
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M5 12h14" /><path d="m12 5 7 7-7 7" />
+                </svg>
+              </Link>
+              <a
+                href="https://github.com/Irwingduran/gossipay-hedera"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-6 py-3 text-sm font-medium text-neutral-600 border border-neutral-200 rounded-lg hover:border-neutral-300 hover:text-neutral-800 transition-colors"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
+                </svg>
+                Source
+              </a>
+            </div>
           </div>
-          <div className="border border-neutral-100 rounded-lg p-5">
-            <h3 className="font-serif text-lg text-neutral-900">HCS audit trail</h3>
-            <p className="mt-2 text-sm text-neutral-500 leading-relaxed">
-              Every transaction logged immutably on Hedera Consensus Service.
-              Verifiable on Hashscan.
-            </p>
-          </div>
-          <div className="border border-neutral-100 rounded-lg p-5">
-            <h3 className="font-serif text-lg text-neutral-900">Agent-native</h3>
-            <p className="mt-2 text-sm text-neutral-500 leading-relaxed">
-              Built for autonomous agents. LangChain tools, streaming, and
-              real-time policy enforcement.
-            </p>
+          <div className="hidden lg:block">
+            <NetworkDiagram />
           </div>
         </div>
+      </section>
 
-        <p className="mt-16 text-xs text-neutral-400">
-          gossipay — Hedera AI Studio Challenge 2026
-        </p>
+      {/* ───── For developers ───── */}
+      <section className="px-6 py-24 border-t border-neutral-100">
+        <div className="max-w-5xl mx-auto">
+          <p className="text-xs font-medium text-neutral-400 uppercase tracking-widest mb-4">
+            For developers
+          </p>
+          <h2 className="font-serif text-3xl sm:text-4xl text-neutral-900 leading-tight">
+            Three lines to deploy an agent economy
+          </h2>
+          <p className="mt-3 text-neutral-500 max-w-2xl">
+            gossipay is an open-source SDK that extends the Hedera Agent Kit with
+            programmable policies. Each agent gets its own wallet, its own rules,
+            and its own tools.
+          </p>
+          <div className="mt-10 grid lg:grid-cols-2 gap-6">
+            <CodeBlock
+              title="Initialize a wallet"
+              lang="typescript"
+              code={`const wallet = new GossipayWallet({\n  accountId: process.env.HEDERA_ACCOUNT_ID,\n  privateKey: process.env.HEDERA_PRIVATE_KEY,\n  policies: [{\n    maxPerTransaction: 2,\n    maxPerSession: 10,\n    currency: 'HBAR',\n  }],\n  auditTopicId: process.env.HCS_TOPIC_ID,\n})`}
+            />
+            <CodeBlock
+              title="Attach policies as hooks"
+              lang="typescript"
+              code={`// Policies run before every tool call\nclass SpendLimitPolicy extends AbstractPolicy {\n  async shouldBlockPostParamsNormalization(\n    params, method\n  ): Promise<boolean> {\n    return amount > this.config.maxPerTransaction\n  }\n}`}
+            />
+            <CodeBlock
+              title="Deploy a LangChain agent"
+              lang="typescript"
+              code={`const agent = createReactAgent({\n  llm: new ChatOpenAI({ model: 'gpt-4o' }),\n  tools: wallet.getTools(),\n  checkpointSaver: new MemorySaver(),\n})`}
+            />
+            <CodeBlock
+              title="Stream events in real-time"
+              lang="typescript"
+              code={`for await (const event of streamAgentEvents(sessionId, msg)) {\n  switch (event.event) {\n    case 'token':       // LLM tokens\n    case 'transaction':  // Hedera tx results\n    case 'pending_approval': // Human needed\n  }\n}`}
+            />
+          </div>
+          <div className="mt-8 flex items-center gap-6 text-sm text-neutral-500">
+            <span className="flex items-center gap-2">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-green-500"><path d="M20 6 9 17l-5-5"/></svg>
+              TypeScript &bull; ESM &bull; Strict
+            </span>
+            <span className="flex items-center gap-2">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-green-500"><path d="M20 6 9 17l-5-5"/></svg>
+              Works with any LLM (OpenAI / Anthropic)
+            </span>
+            <span className="flex items-center gap-2">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-green-500"><path d="M20 6 9 17l-5-5"/></svg>
+              pnpm monorepo &bull; Turborepo
+            </span>
+          </div>
+        </div>
+      </section>
+
+      {/* ───── Architecture ───── */}
+      <section className="px-6 py-24 border-t border-neutral-100 bg-neutral-50/50">
+        <div className="max-w-5xl mx-auto">
+          <p className="text-xs font-medium text-neutral-400 uppercase tracking-widest mb-4">
+            Architecture
+          </p>
+          <h2 className="font-serif text-3xl sm:text-4xl text-neutral-900 leading-tight">
+            Every agent is a node in your economy
+          </h2>
+          <p className="mt-3 text-neutral-500 max-w-2xl">
+            Agents aren't monolithic. Each one has a distinct role, wallet,
+            policy set, and tool belt. They discover, negotiate, and transact
+            autonomously — while you control the guardrails.
+          </p>
+
+          <div className="mt-10 grid sm:grid-cols-3 gap-6">
+            <ArchCard
+              icon="🔍"
+              title="Research Agent"
+              subtitle="Market intelligence"
+              features={[
+                'Web search + competitor analysis',
+                'Spend limit: 2 HBAR/tx',
+                'Allow list: 3 providers',
+              ]}
+            />
+            <ArchCard
+              icon="⚡"
+              title="Procurement Agent"
+              subtitle="Payments & execution"
+              features={[
+                'HBAR transfers to APIs',
+                'Approval threshold: > 5 HBAR',
+                'HCS audit logging',
+              ]}
+            />
+            <ArchCard
+              icon="📋"
+              title="Audit Agent"
+              subtitle="Verification & HCS"
+              features={[
+                'Read-only: no spend allowed',
+                'HCS topic reader',
+                'Hashscan verification',
+              ]}
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* ───── Enterprise features ───── */}
+      <section className="px-6 py-24 border-t border-neutral-100">
+        <div className="max-w-5xl mx-auto">
+          <p className="text-xs font-medium text-neutral-400 uppercase tracking-widest mb-4">
+            Enterprise
+          </p>
+          <h2 className="font-serif text-3xl sm:text-4xl text-neutral-900 leading-tight">
+            Safety, transparency, control
+          </h2>
+          <p className="mt-3 text-neutral-500 max-w-2xl">
+            gossipay is built for financial operations that demand
+            cryptographic guarantees and human oversight.
+          </p>
+
+          <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <FeatureCard
+              icon="🛡️"
+              title="Three guardrails"
+              desc="Spend limits, allow lists, and approval thresholds — enforced at runtime before any transaction reaches Hedera."
+            />
+            <FeatureCard
+              icon="📜"
+              title="Immutable audit"
+              desc="Every approved transaction is logged on Hedera Consensus Service. Viewable on Hashscan. Tamper-proof."
+            />
+            <FeatureCard
+              icon="👤"
+              title="Human-in-the-loop"
+              desc="Configurable approval flows. High-value transactions pause and wait for human sign-off before execution."
+            />
+            <FeatureCard
+              icon="⚙️"
+              title="Hot-reload policies"
+              desc="Update policies without restarting agents. Changes take effect on the next tool call."
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* ───── CTA ───── */}
+      <section className="px-6 py-24 border-t border-neutral-100 bg-neutral-900 text-white">
+        <div className="max-w-2xl mx-auto text-center">
+          <h2 className="font-serif text-3xl sm:text-4xl leading-tight">
+            Build your agent economy
+          </h2>
+          <p className="mt-4 text-neutral-400 text-sm leading-relaxed max-w-lg mx-auto">
+            Spin up the demo, configure policies, and watch agents trade on
+            Hedera testnet in real-time. Full SDK available on GitHub.
+          </p>
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link
+              href="/demo"
+              className="inline-flex items-center gap-2 px-6 py-3 text-sm font-medium text-neutral-900 bg-white rounded-lg hover:bg-neutral-100 transition-colors"
+            >
+              Launch demo
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 12h14" /><path d="m12 5 7 7-7 7" />
+              </svg>
+            </Link>
+            <a
+              href="https://github.com/Irwingduran/gossipay-hedera"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-6 py-3 text-sm font-medium text-neutral-300 border border-neutral-700 rounded-lg hover:border-neutral-500 hover:text-white transition-colors"
+            >
+              View on GitHub
+            </a>
+          </div>
+          <p className="mt-16 text-xs text-neutral-600">
+            gossipay &mdash; Hedera AI Studio Challenge 2026. MIT License.
+          </p>
+        </div>
+      </section>
+    </>
+  )
+}
+
+function CodeBlock({ title, code, lang }: { title: string; code: string; lang: string }) {
+  return (
+    <div className="border border-neutral-200 rounded-xl overflow-hidden bg-white">
+      <div className="flex items-center justify-between px-4 py-2 border-b border-neutral-100 bg-neutral-50">
+        <span className="text-xs font-medium text-neutral-500">{title}</span>
+        <span className="text-[10px] text-neutral-400 font-mono">{lang}</span>
       </div>
-    </main>
+      <pre className="p-4 text-xs font-mono text-neutral-700 leading-relaxed overflow-x-auto">
+        <code>{code}</code>
+      </pre>
+    </div>
+  )
+}
+
+function ArchCard({
+  icon,
+  title,
+  subtitle,
+  features,
+}: {
+  icon: string
+  title: string
+  subtitle: string
+  features: string[]
+}) {
+  return (
+    <div className="border border-neutral-200 bg-white rounded-xl p-6">
+      <div className="flex items-center gap-3 mb-4">
+        <span className="w-10 h-10 rounded-lg bg-neutral-100 flex items-center justify-center text-lg">
+          {icon}
+        </span>
+        <div>
+          <h3 className="text-sm font-semibold text-neutral-900">{title}</h3>
+          <p className="text-xs text-neutral-400">{subtitle}</p>
+        </div>
+      </div>
+      <ul className="space-y-2">
+        {features.map((f) => (
+          <li key={f} className="flex items-start gap-2 text-xs text-neutral-500">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-green-500 shrink-0 mt-0.5">
+              <path d="M20 6 9 17l-5-5" />
+            </svg>
+            {f}
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+function FeatureCard({
+  icon,
+  title,
+  desc,
+}: {
+  icon: string
+  title: string
+  desc: string
+}) {
+  return (
+    <div className="border border-neutral-100 rounded-xl p-5">
+      <span className="text-lg">{icon}</span>
+      <h3 className="mt-3 text-sm font-semibold text-neutral-900">{title}</h3>
+      <p className="mt-1 text-xs text-neutral-500 leading-relaxed">{desc}</p>
+    </div>
   )
 }

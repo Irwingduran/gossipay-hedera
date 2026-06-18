@@ -49,40 +49,37 @@ export function ApprovalModal() {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl shadow-lg border border-neutral-200 max-w-sm w-full mx-4 overflow-hidden">
-        <div className="px-6 py-5">
-          <h3 className="font-serif text-lg text-neutral-900">Approval required</h3>
-          <p className="mt-1 text-sm text-neutral-500">
-            A transaction requires your approval before proceeding.
-          </p>
-          <div className="mt-4 border border-neutral-100 rounded-lg p-4 text-sm space-y-2">
-            <div className="flex justify-between">
-              <span className="text-neutral-400">Amount</span>
-              <span className="font-medium text-neutral-900">{latest.amount} HBAR</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-neutral-400">Provider</span>
-              <span className="text-neutral-700">{latest.provider}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-neutral-400">Tool</span>
-              <span className="text-neutral-700">{latest.toolName}</span>
-            </div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm">
+      <div className="bg-white border border-neutral-200 rounded-xl shadow-lg w-full max-w-sm mx-4 overflow-hidden">
+        <div className="px-5 pt-5 pb-4">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="w-2 h-2 bg-amber-500 rounded-full animate-pulse" />
+            <span className="text-xs font-medium text-amber-700 uppercase tracking-wider">
+              Approval required
+            </span>
           </div>
+          <p className="text-sm text-neutral-500">
+            The <strong className="text-neutral-800">{latest.toolName}</strong>{' '}
+            agent wants to send{' '}
+            <strong className="text-neutral-800">{latest.amount} HBAR</strong>{' '}
+            to <strong className="text-neutral-800">{latest.provider}</strong>.
+          </p>
+          <p className="mt-2 text-[11px] text-neutral-400 font-mono">
+            Approval ID: {latest.id.slice(0, 12)}…
+          </p>
         </div>
         <div className="flex border-t border-neutral-100 divide-x divide-neutral-100">
           <button
             onClick={() => handleAction('rejected')}
             disabled={loadingId === latest.id}
-            className="flex-1 py-3 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors disabled:opacity-40"
+            className="flex-1 py-3 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
             Reject
           </button>
           <button
             onClick={() => handleAction('approved')}
             disabled={loadingId === latest.id}
-            className="flex-1 py-3 text-sm font-medium text-green-600 hover:bg-green-50 transition-colors disabled:opacity-40"
+            className="flex-1 py-3 text-sm font-medium text-green-600 hover:bg-green-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
             {loadingId === latest.id ? 'Processing…' : 'Approve'}
           </button>

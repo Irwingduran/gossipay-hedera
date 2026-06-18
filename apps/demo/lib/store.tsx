@@ -54,8 +54,15 @@ function reducer(state: AppState, action: Action): AppState {
   switch (action.type) {
     case 'SET_SESSION_ID':
       return { ...state, sessionId: action.payload }
-    case 'ADD_MESSAGE':
+    case 'ADD_MESSAGE': {
+      const exists = state.messages.findIndex((m) => m.id === action.payload.id)
+      if (exists >= 0) {
+        const next = [...state.messages]
+        next[exists] = action.payload
+        return { ...state, messages: next }
+      }
       return { ...state, messages: [...state.messages, action.payload] }
+    }
     case 'SET_STREAMING':
       return { ...state, isStreaming: action.payload }
     case 'SET_ERROR':

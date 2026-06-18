@@ -16,9 +16,9 @@ const mono = DM_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'gossipay — programmable economy for AI agents',
+  title: 'gossipay — the agent commerce network on Hedera',
   description:
-    'The programmable economic layer for autonomous AI agents, built on Hedera.',
+    'Autonomous agents trading, negotiating, and executing payments on Hedera — each with its own wallet, policies, and role. Immutable audit trail on HCS.',
 }
 
 export default function RootLayout({

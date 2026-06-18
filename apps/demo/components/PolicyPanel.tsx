@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useRef } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { useSession } from '@/lib/store'
 import type { SpendLimitConfig, AllowListConfig, RequireApprovalConfig, PolicyConfig } from '@gossipay/sdk'
 
@@ -37,9 +37,19 @@ function useDebounceSync() {
   return sync
 }
 
+const sections = ['spend', 'allowlist', 'approval'] as const
+type SectionId = (typeof sections)[number]
+
 export function PolicyPanel() {
   const { state, dispatch } = useSession()
   const syncPolicies = useDebounceSync()
+  const [open, setOpen] = useState<Set<SectionId>>(new Set(['spend', 'allowlist', 'approval']))
+  const toggle = (id: SectionId) => {
+    const next = new Set(open)
+    if (next.has(id)) next.delete(id)
+    else next.add(id)
+    setOpen(next)
+  }
 
   const spendCfg = state.policies.find(isSpendLimit)
   const allowCfg = state.policies.find(isAllowList)
@@ -52,73 +62,80 @@ export function PolicyPanel() {
     syncPolicies(state.sessionId, next)
   }
 
+  const spent = state.transactions
+    .filter((t) => t.status === 'approved')
+    .reduce((s, t) => s + t.amount, 0)
+
   return (
     <div className="px-5 py-4 border-b border-neutral-100">
       <h2 className="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-3">
         Policies
       </h2>
-      <div className="space-y-3">
+      <div className="space-y-2">
+        {/* Spend Limit */}
         {spendCfg && (
-          <div className="border border-neutral-100 rounded-lg p-3">
-            <label className="text-xs font-medium text-neutral-700">Spend limit</label>
-            <div className="mt-2 space-y-2">
-              <div>
-                <span className="text-[10px] text-neutral-400">Per tx</span>
-                <input
-                  type="number"
-                  value={spendCfg.maxPerTransaction}
-                  onChange={(e) =>
-                    updatePolicy(
-                      state.policies.indexOf(spendCfg),
-                      { ...spendCfg, maxPerTransaction: Number(e.target.value) }
-                    )
-                  }
-                  className="mt-0.5 w-full text-xs bg-neutral-50 border border-neutral-200 rounded px-2 py-1 outline-none focus:border-neutral-400"
-                />
+          <Section
+            id="spend"
+            label="Spend limit"
+            summary={`${spendCfg.maxPerTransaction} HBAR/tx · ${spendCfg.maxPerSession} HBAR/session`}
+            open={open}
+            onToggle={toggle}
+          >
+            <div className="space-y-2.5">
+              <div className="flex gap-2">
+                <Field label="Per tx">
+                  <input
+                    type="number"
+                    value={spendCfg.maxPerTransaction}
+                    onChange={(e) =>
+                      updatePolicy(
+                        state.policies.indexOf(spendCfg),
+                        { ...spendCfg, maxPerTransaction: Number(e.target.value) }
+                      )
+                    }
+                    className="w-full text-[11px] bg-neutral-50 border border-neutral-200 rounded px-2 py-1 outline-none focus:border-neutral-400 transition-colors"
+                  />
+                </Field>
+                <Field label="Per session">
+                  <input
+                    type="number"
+                    value={spendCfg.maxPerSession}
+                    onChange={(e) =>
+                      updatePolicy(
+                        state.policies.indexOf(spendCfg),
+                        { ...spendCfg, maxPerSession: Number(e.target.value) }
+                      )
+                    }
+                    className="w-full text-[11px] bg-neutral-50 border border-neutral-200 rounded px-2 py-1 outline-none focus:border-neutral-400 transition-colors"
+                  />
+                </Field>
               </div>
               <div>
-                <span className="text-[10px] text-neutral-400">Per session</span>
-                <input
-                  type="number"
-                  value={spendCfg.maxPerSession}
-                  onChange={(e) =>
-                    updatePolicy(
-                      state.policies.indexOf(spendCfg),
-                      { ...spendCfg, maxPerSession: Number(e.target.value) }
-                    )
-                  }
-                  className="mt-0.5 w-full text-xs bg-neutral-50 border border-neutral-200 rounded px-2 py-1 outline-none focus:border-neutral-400"
-                />
-              </div>
-              <div className="flex items-center justify-between text-[10px] text-neutral-400">
-                <span>Spent</span>
-                <span>{state.transactions
-                  .filter((t) => t.status === 'approved')
-                  .reduce((s, t) => s + t.amount, 0)} / {spendCfg.maxPerSession} HBAR</span>
-              </div>
-              <div className="h-1 bg-neutral-100 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-neutral-800 rounded-full transition-all"
-                  style={{
-                    width: `${Math.min(
-                      100,
-                      (state.transactions
-                        .filter((t) => t.status === 'approved')
-                        .reduce((s, t) => s + t.amount, 0) /
-                        spendCfg.maxPerSession) *
-                        100
-                    )}%`,
-                  }}
-                />
+                <div className="flex justify-between text-[10px] text-neutral-400 mb-1">
+                  <span>Spent this session</span>
+                  <span>{spent} / {spendCfg.maxPerSession} HBAR</span>
+                </div>
+                <div className="h-1.5 bg-neutral-100 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-neutral-800 rounded-full transition-all duration-300"
+                    style={{ width: `${Math.min(100, (spent / spendCfg.maxPerSession) * 100)}%` }}
+                  />
+                </div>
               </div>
             </div>
-          </div>
+          </Section>
         )}
 
+        {/* Allow List */}
         {allowCfg && (
-          <div className="border border-neutral-100 rounded-lg p-3">
-            <label className="text-xs font-medium text-neutral-700">Allow list</label>
-            <div className="mt-2">
+          <Section
+            id="allowlist"
+            label="Allow list"
+            summary={`${allowCfg.providers.length} provider(s) allowed`}
+            open={open}
+            onToggle={toggle}
+          >
+            <div>
               <input
                 type="text"
                 value={allowCfg.providers.join(', ')}
@@ -134,23 +151,26 @@ export function PolicyPanel() {
                     }
                   )
                 }
-                className="w-full text-xs bg-neutral-50 border border-neutral-200 rounded px-2 py-1 outline-none focus:border-neutral-400"
+                className="w-full text-[11px] bg-neutral-50 border border-neutral-200 rounded px-2 py-1 outline-none focus:border-neutral-400 transition-colors font-mono"
               />
               <p className="mt-1 text-[10px] text-neutral-400">
                 Comma-separated provider domains
               </p>
             </div>
-          </div>
+          </Section>
         )}
 
+        {/* Approval Threshold */}
         {approvalCfg && (
-          <div className="border border-neutral-100 rounded-lg p-3">
-            <label className="text-xs font-medium text-neutral-700">
-              Approval threshold
-            </label>
-            <div className="mt-2 space-y-2">
-              <div>
-                <span className="text-[10px] text-neutral-400">Above (HBAR)</span>
+          <Section
+            id="approval"
+            label="Approval threshold"
+            summary={`> ${approvalCfg.aboveAmount} HBAR · ${approvalCfg.timeoutSeconds}s timeout`}
+            open={open}
+            onToggle={toggle}
+          >
+            <div className="flex gap-2">
+              <Field label="Above (HBAR)">
                 <input
                   type="number"
                   value={approvalCfg.aboveAmount}
@@ -160,11 +180,10 @@ export function PolicyPanel() {
                       { ...approvalCfg, aboveAmount: Number(e.target.value) }
                     )
                   }
-                  className="mt-0.5 w-full text-xs bg-neutral-50 border border-neutral-200 rounded px-2 py-1 outline-none focus:border-neutral-400"
+                  className="w-full text-[11px] bg-neutral-50 border border-neutral-200 rounded px-2 py-1 outline-none focus:border-neutral-400 transition-colors"
                 />
-              </div>
-              <div>
-                <span className="text-[10px] text-neutral-400">Timeout (s)</span>
+              </Field>
+              <Field label="Timeout (s)">
                 <input
                   type="number"
                   value={approvalCfg.timeoutSeconds}
@@ -174,13 +193,65 @@ export function PolicyPanel() {
                       { ...approvalCfg, timeoutSeconds: Number(e.target.value) }
                     )
                   }
-                  className="mt-0.5 w-full text-xs bg-neutral-50 border border-neutral-200 rounded px-2 py-1 outline-none focus:border-neutral-400"
+                  className="w-full text-[11px] bg-neutral-50 border border-neutral-200 rounded px-2 py-1 outline-none focus:border-neutral-400 transition-colors"
                 />
-              </div>
+              </Field>
             </div>
-          </div>
+          </Section>
         )}
       </div>
+    </div>
+  )
+}
+
+function Section({
+  id,
+  label,
+  summary,
+  open,
+  onToggle,
+  children,
+}: {
+  id: SectionId
+  label: string
+  summary: string
+  open: Set<SectionId>
+  onToggle: (id: SectionId) => void
+  children: React.ReactNode
+}) {
+  const isOpen = open.has(id)
+  return (
+    <div className="border border-neutral-100 rounded-lg overflow-hidden">
+      <button
+        onClick={() => onToggle(id)}
+        className="w-full flex items-center justify-between px-3 py-2 hover:bg-neutral-50 transition-colors text-left"
+      >
+        <div>
+          <span className="text-xs font-medium text-neutral-700">{label}</span>
+          {!isOpen && (
+            <span className="ml-2 text-[10px] text-neutral-400">{summary}</span>
+          )}
+        </div>
+        <svg
+          className={`w-3 h-3 text-neutral-300 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <path d="m6 9 6 6 6-6" />
+        </svg>
+      </button>
+      {isOpen && <div className="px-3 pb-3">{children}</div>}
+    </div>
+  )
+}
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="flex-1">
+      <span className="text-[10px] text-neutral-400">{label}</span>
+      {children}
     </div>
   )
 }

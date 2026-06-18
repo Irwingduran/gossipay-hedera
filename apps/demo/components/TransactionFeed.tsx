@@ -7,16 +7,27 @@ export function TransactionFeed() {
   const { state } = useSession()
 
   return (
-    <div className="px-5 py-4 border-b border-neutral-100">
-      <h2 className="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-3">
-        Transaction feed
-      </h2>
+    <div>
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-xs font-medium text-neutral-400 uppercase tracking-wider">
+          Activity log
+        </h2>
+        {state.transactions.length > 0 && (
+          <span className="text-[10px] text-neutral-300">
+            {state.transactions.length} tx(s)
+          </span>
+        )}
+      </div>
       {state.transactions.length === 0 ? (
-        <p className="text-xs text-neutral-300">No transactions yet</p>
+        <div className="border border-dashed border-neutral-200 rounded-lg p-4 text-center">
+          <p className="text-xs text-neutral-300">
+            No transactions yet. Ask the agent to do something.
+          </p>
+        </div>
       ) : (
-        <div className="space-y-2 max-h-48 overflow-y-auto">
+        <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
           {[...state.transactions].reverse().map((tx, i) => (
-            <TransactionCard key={i} transaction={tx} />
+            <TransactionCard key={tx.txHash ?? i} transaction={tx} />
           ))}
         </div>
       )}

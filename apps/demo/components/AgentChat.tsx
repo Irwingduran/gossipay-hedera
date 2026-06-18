@@ -1,9 +1,10 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 import { useSession } from '@/lib/store'
 import { useAgentStream } from '@/lib/hooks/useAgentStream'
-import { TransactionCard } from './TransactionCard'
 
 export function AgentChat() {
   const { state } = useSession()
@@ -13,7 +14,7 @@ export function AgentChat() {
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [state.messages, state.transactions])
+  }, [state.messages])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -23,29 +24,33 @@ export function AgentChat() {
   }
 
   const suggestedQueries = [
-    'Analyze LatAm SaaS market viability',
-    'Research competitors in AI payments',
+    'Research the LatAm SaaS market and buy a market report for 1.5 HBAR',
+    'Analyze competitors and send 0.5 HBAR to api.coincap.io for BTC price',
+    'Show me the audit trail of all transactions on HCS',
   ]
 
   return (
     <div className="flex flex-col h-full">
       <div className="flex-1 overflow-y-auto px-6 py-6 space-y-4">
         {state.messages.length === 0 && !isStreaming && (
-          <div className="flex flex-col items-center justify-center h-full text-center">
+          <div className="flex flex-col items-center justify-center h-full text-center py-16">
+            <div className="w-12 h-12 rounded-full bg-neutral-100 flex items-center justify-center mb-4">
+              <span className="text-lg">🧠</span>
+            </div>
             <h2 className="font-serif text-2xl text-neutral-900">
-              Agentic economy demo
+              Command center
             </h2>
-            <p className="mt-2 text-sm text-neutral-400 max-w-md">
-              Ask the agent to research the Latin American SaaS market. It will
-              gather intelligence, evaluate opportunities, and execute
-              micro-payments on Hedera Testnet.
+            <p className="mt-2 text-sm text-neutral-400 max-w-md leading-relaxed">
+              Talk to your agent swarm. They can research markets, execute
+              payments, and log everything on HCS — all within your configured
+              policies.
             </p>
             <div className="mt-6 flex flex-col gap-2">
               {suggestedQueries.map((q) => (
                 <button
                   key={q}
                   onClick={() => sendMessage(q)}
-                  className="text-sm text-neutral-500 border border-neutral-200 rounded-lg px-4 py-2 hover:border-neutral-400 hover:text-neutral-700 transition-colors"
+                  className="text-sm text-left text-neutral-500 border border-neutral-200 rounded-lg px-4 py-2.5 max-w-lg hover:border-neutral-400 hover:text-neutral-700 transition-colors"
                 >
                   {q}
                 </button>
@@ -60,35 +65,28 @@ export function AgentChat() {
             className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
           >
             <div
-              className={`max-w-[70%] rounded-lg px-4 py-3 text-sm leading-relaxed ${
+              className={`max-w-[75%] rounded-xl px-4 py-3 text-sm leading-relaxed ${
                 msg.role === 'user'
-                  ? 'bg-neutral-900 text-white'
-                  : 'bg-neutral-50 text-neutral-800 border border-neutral-100'
+                  ? 'bg-neutral-900 text-white rounded-br-md'
+                  : 'bg-neutral-50 text-neutral-800 border border-neutral-100 rounded-bl-md prose prose-sm max-w-none'
               }`}
             >
-              {msg.content || (msg.role === 'assistant' && isStreaming ? (
+              {msg.role === 'user' ? (
+                msg.content
+              ) : msg.content ? (
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {msg.content}
+                </ReactMarkdown>
+              ) : isStreaming ? (
                 <span className="inline-flex gap-1">
                   <span className="w-1.5 h-1.5 bg-neutral-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                   <span className="w-1.5 h-1.5 bg-neutral-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
                   <span className="w-1.5 h-1.5 bg-neutral-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
                 </span>
-              ) : null)}
+              ) : null}
             </div>
           </div>
         ))}
-
-        {state.transactions.length > 0 && (
-          <div className="pt-4 border-t border-neutral-100">
-            <p className="text-xs font-medium text-neutral-400 mb-3 uppercase tracking-wider">
-              Transactions
-            </p>
-            <div className="space-y-2">
-              {state.transactions.map((tx, i) => (
-                <TransactionCard key={i} transaction={tx} />
-              ))}
-            </div>
-          </div>
-        )}
 
         {error && (
           <div className="bg-red-50 border border-red-100 rounded-lg px-4 py-3 text-sm text-red-700">
@@ -105,7 +103,7 @@ export function AgentChat() {
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask the agent to do something…"
+            placeholder="Command your agents…"
             disabled={isStreaming}
             className="flex-1 text-sm bg-neutral-50 border border-neutral-200 rounded-lg px-4 py-2.5 outline-none focus:border-neutral-400 transition-colors disabled:opacity-50"
           />
