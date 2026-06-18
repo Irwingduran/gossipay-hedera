@@ -318,6 +318,3 @@ resolveApproval(id, status)     // "approved" | "rejected"
 
 ---
 
-## Licencia
-
-MIT — construido para el Hedera AI Studio Challenge 2026.
