@@ -1,94 +1,101 @@
 # gossipay
 
-**Programmable economy para AI agents sobre Hedera**
+**Programmable economy for AI agents on Hedera**
 
-Monorepo con un SDK de policy engine y una demo interactiva donde agentes autónomos pueden ejecutar transacciones en la testnet de Hedera con guardrails configurables, aprobación humana opcional y auditoría inmutable via HCS.
+Monorepo with a policy engine SDK and an interactive demo where autonomous agents execute transactions on the Hedera testnet with configurable guardrails, optional human approval, and immutable audit trail via HCS.
 
 ---
 
-## Arquitectura
+## Architecture
 
 ```
 gossipay/
 ├── packages/
-│   └── sdk/              @gossipay/sdk — policy engine, wallet, auditoría
+│   └── sdk/              @gossipay/sdk — policy engine, wallet, audit
 └── apps/
-    └── demo/             @gossipay/demo — Next.js 15 app con chat + UI
+    └── demo/             @gossipay/demo — Next.js 15 app with chat + UI
 ```
 
-### Flujo de datos
+### Data flow
 
-1. El usuario envía un mensaje en el chat
-2. `useAgentStream` POSTea a `/api/agent` con el mensaje y session ID
-3. El backend crea/recupera un agente LangChain con un `GossipayWallet`
-4. El agente procesa el mensaje e invoca herramientas de Hedera (transfers, balances, etc.)
-5. Cada tool call atraviesa los **3 policy hooks**: Spend Limit, Allow List, Require Approval
-6. Si una transacción requiere aprobación humana, el policy crea un `pending_approval` y bloquea la tool
-7. Los eventos viajan en tiempo real via **SSE**: tokens, tool_start, tool_end, transactions, pending_approvals
-8. El usuario aprueba/rechaza desde el modal, se llama a `/api/approve`, y el agente reintenta
-9. Cada transacción ejecutada se registra opcionalmente en **Hedera Consensus Service**
+1. User sends a message in the chat
+2. `useAgentStream` POSTs to `/api/agent` with the message and session ID
+3. The backend creates/retrieves a LangChain agent with a `GossipayWallet`
+4. The agent processes the message and invokes Hedera tools (transfers, balances, etc.)
+5. Each tool call runs through the **3 policy hooks**: Spend Limit, Allow List, Require Approval
+6. If a transaction requires human approval, the policy creates a `pending_approval` and blocks the tool
+7. Events stream in real-time via **SSE**: tokens, tool_start, tool_end, transactions, pending_approvals
+8. The user approves/rejects from the modal, calls `/api/approve`, and the agent retries
+9. Each executed transaction is optionally logged to **Hedera Consensus Service**
 
 ---
 
 ## Features
 
-### Policy Engine (3 guardrails configurables)
+### Policy Engine (3 configurable guardrails)
 
-| Policy | Descripción |
+| Policy | Description |
 |--------|-------------|
-| **Spend Limit** | Limita monto por transacción y por sesión (HBAR) |
-| **Allow List** | Solo permite transfers a providers autorizados |
-| **Require Approval** | Transacciones sobre un umbral requieren aprobación humana |
+| **Spend Limit** | Limits amount per transaction and per session (HBAR) |
+| **Allow List** | Only allows transfers to authorized providers |
+| **Require Approval** | Transactions above a threshold require human approval |
 
-- Los policies se actualizan **en caliente** desde la UI sin reiniciar el agente
-- Se sincronizan al servidor via `POST /api/policies` con debounce de 600ms
+- Policies are **hot-reloaded** from the UI without restarting the agent
+- Synced to the server via `POST /api/policies` with 600ms debounce
 
-### Streaming en Tiempo Real
+### Real-Time Streaming
 
-- El agente transmite tokens, tool calls y resultados via **Server-Sent Events**
-- La UI se actualiza sin polling ni websockets
-- Soporta cancelación vía `AbortController`
+- The agent streams tokens, tool calls, and results via **Server-Sent Events**
+- The UI updates without polling or websockets
+- Supports cancellation via `AbortController`
 
-### Auditoría Inmutable (HCS)
+### Immutable Audit (HCS)
 
-- Cada transacción aprobada se registra en un topic de **Hedera Consensus Service**
-- El log contiene: timestamp, acción, monto, provider, estado, txHash, policy results
-- Visible públicamente en [Hashscan](https://hashscan.io/testnet/topic/{TOPIC_ID})
+- Every approved transaction is logged to a **Hedera Consensus Service** topic
+- The log contains: timestamp, action, amount, provider, status, txHash, policy results
+- Publicly visible on [Hashscan](https://hashscan.io/testnet/topic/{TOPIC_ID})
 
 ### Dual LLM
 
-- Soporta **OpenAI (GPT-4o)** y **Anthropic (Claude)**
-- Configurable via `LLM_PROVIDER` en environment
+- Supports **OpenAI (GPT-4o)** and **Anthropic (Claude)**
+- Configurable via `LLM_PROVIDER` environment variable
 
-### Datos de Ejemplo
+### Telegram Bot
 
-- `/api/competitor-intel` — análisis competitivo simulado (PayBot, CryptoAgent Pay, etc.)
-- `/api/market-data` — datos de mercado LatAm (Brasil, México, Colombia, Argentina, Chile)
+- Production-ready Telegram bot at [@gossipay_bot](https://t.me/gossipay_bot)
+- Each chat gets an isolated agent session with its own wallet, policies, and conversation history
+- Commands: `/start`, `/status`, `/reset`, and free-form messages
+- Built on Telegraf 4, reuses `@gossipay/sdk`
+
+### Sample Data
+
+- `/api/competitor-intel` — simulated competitive analysis (PayBot, CryptoAgent Pay, etc.)
+- `/api/market-data` — simulated LatAm market data (Brazil, Mexico, Colombia, Argentina, Chile)
 
 ---
 
-## Requisitos
+## Requirements
 
 - **Node.js** >= 20
 - **pnpm** 9.15+
-- Una cuenta en **Hedera testnet** (account ID + private key)
-- API key de **OpenAI** o **Anthropic**
+- A **Hedera testnet** account (account ID + private key)
+- API key for **OpenAI** or **Anthropic**
 
 ---
 
-## Instalación
+## Installation
 
 ```bash
 pnpm install
 ```
 
-## Configuración
+## Configuration
 
 ```bash
 cp .env.example .env
 ```
 
-Editar `.env` con tus credenciales:
+Edit `.env` with your credentials:
 
 ```env
 # Hedera testnet
@@ -101,69 +108,84 @@ LLM_PROVIDER=openai
 OPENAI_API_KEY=sk-proj-...
 OPENAI_MODEL=gpt-4o
 
-# HCS Audit Trail (opcional)
+# HCS Audit Trail (optional)
 HEDERA_HCS_TOPIC_ID=0.0.xxxxx
 NEXT_PUBLIC_HCS_TOPIC_ID=0.0.xxxxx
+
+# Telegram Bot (optional)
+TELEGRAM_BOT_TOKEN=your_bot_token_here
 ```
 
-## Desarrollo
+## Development
 
 ```bash
 pnpm dev
 ```
 
-Abrir [http://localhost:3000](http://localhost:3000). El turbo.json ya tiene `dotEnv` configurado para cargar `.env` desde la raíz del monorepo.
+Open [http://localhost:3000](http://localhost:3000).
+
+To run only the Telegram bot:
+
+```bash
+pnpm --filter @gossipay/bot dev
+```
 
 ## Tests
 
 ```bash
 cd packages/sdk
-pnpm test          # Vitest — tests unitarios de policies y engine
+pnpm test          # Vitest — unit tests for policies and engine
 ```
 
 ---
 
-## Estructura del Proyecto
+## Project Structure
 
 ```
 apps/demo/
 ├── app/
 │   ├── layout.tsx              # Root layout (Google Fonts + SessionProvider)
 │   ├── page.tsx                # Landing page
-│   ├── globals.css             # Tailwind + scrollbar personalizado
+│   ├── globals.css             # Tailwind + custom scrollbar
 │   ├── demo/
 │   │   └── page.tsx            # Split-pane demo UI
 │   └── api/
-│       ├── agent/route.ts      # POST — SSE streaming del agente
-│       ├── approve/route.ts    # POST — resuelve approval (approved/rejected)
-│       ├── policies/route.ts   # POST — actualiza policies en caliente
-│       ├── competitor-intel/route.ts  # GET — datos competitivos simulados
-│       └── market-data/route.ts       # GET — datos de mercado LatAm
+│       ├── agent/route.ts      # POST — SSE streaming agent
+│       ├── approve/route.ts    # POST — resolves approval (approved/rejected)
+│       ├── policies/route.ts   # POST — hot-reload policies
+│       ├── competitor-intel/route.ts  # GET — simulated competitive data
+│       └── market-data/route.ts       # GET — LatAm market data
 ├── components/
-│   ├── AgentChat.tsx           # Chat interface con streaming
-│   ├── ApprovalModal.tsx       # Modal de aprobación humana
-│   ├── AuditTrail.tsx          # Resumen de transacciones + link Hashscan
-│   ├── PolicyPanel.tsx         # Controles editables de policies
-│   ├── TransactionCard.tsx     # Card individual de transacción
-│   └── TransactionFeed.tsx     # Lista cronológica de transacciones
+│   ├── AgentChat.tsx           # Chat interface with streaming
+│   ├── ApprovalModal.tsx       # Human approval modal
+│   ├── AuditTrail.tsx          # Transaction summary + Hashscan link
+│   ├── PolicyPanel.tsx         # Editable policy controls
+│   ├── TransactionCard.tsx     # Individual transaction card
+│   └── TransactionFeed.tsx     # Chronological transaction list
 └── lib/
-    ├── agent.ts                # Orchestrador del agente LangChain
-    ├── hedera.ts               # Factory de Hedera Client
-    ├── store.tsx               # Estado global (React Context + useReducer)
+    ├── agent.ts                # LangChain agent orchestrator
+    ├── hedera.ts               # Hedera Client factory
+    ├── store.tsx               # Global state (React Context + useReducer)
     └── hooks/
-        └── useAgentStream.ts   # Hook de SSE + AbortController
+        └── useAgentStream.ts   # SSE hook + AbortController
+
+apps/bot/
+└── src/
+    ├── index.ts                # Telegraf polling loop
+    ├── agent.ts                # Agent per chat_id
+    └── env.ts                  # Environment validation
 
 packages/sdk/src/
-├── types.ts                    # Interfaces TypeScript
+├── types.ts                    # TypeScript interfaces
 ├── index.ts                    # Barrel exports
 ├── GossipayWallet.ts           # Wallet class (Hedera + policies + tools)
-├── sessionStore.ts             # Session state in-memory (server-side)
+├── sessionStore.ts             # In-memory session state (server-side)
 ├── policies/
 │   ├── engine.ts               # Policy evaluation engine
-│   ├── spendLimit.ts           # Límite por tx y por sesión
-│   ├── allowList.ts            # Lista blanca de providers
-│   ├── requireApproval.ts      # Aprobación humana para montos altos
-│   └── __tests__/              # Tests unitarios (Vitest)
+│   ├── spendLimit.ts           # Per-tx and per-session limits
+│   ├── allowList.ts            # Provider allow list
+│   ├── requireApproval.ts      # Human approval for high amounts
+│   └── __tests__/              # Unit tests (Vitest)
 └── hooks/
     └── auditLogger.ts          # HCS Audit Trail hook
 ```
@@ -174,7 +196,7 @@ packages/sdk/src/
 
 ### `POST /api/agent`
 
-Streaming SSE del agente LangChain.
+SSE streaming endpoint for the LangChain agent.
 
 **Request:**
 ```json
@@ -182,20 +204,20 @@ Streaming SSE del agente LangChain.
 ```
 
 **SSE Events:**
-| Evento | Descripción |
-|--------|-------------|
+| Event | Description |
+|-------|-------------|
 | `session_start` | `{ sessionId }` |
-| `token` | `{ content: "..." }` — tokens del LLM |
-| `tool_start` | `{ name, input }` — tool comenzó |
-| `tool_end` | `{ name, output }` — tool terminó |
-| `transaction` | `TransactionRecord` — nueva transacción |
-| `pending_approval` | `ApprovalRequest` — requiere aprobación humana |
-| `done` | Mensaje final del agente |
-| `error` | Error del servidor |
+| `token` | `{ content: "..." }` — LLM tokens |
+| `tool_start` | `{ name, input }` — tool started |
+| `tool_end` | `{ name, output }` — tool finished |
+| `transaction` | `TransactionRecord` — new transaction |
+| `pending_approval` | `ApprovalRequest` — human approval required |
+| `done` | Final agent message |
+| `error` | Server error |
 
 ### `POST /api/approve`
 
-Aprueba o rechaza una transacción pendiente.
+Approves or rejects a pending transaction.
 
 **Request:**
 ```json
@@ -204,7 +226,7 @@ Aprueba o rechaza una transacción pendiente.
 
 ### `POST /api/policies`
 
-Actualiza los policies del agente en caliente.
+Hot-reloads agent policies.
 
 **Request:**
 ```json
@@ -222,48 +244,48 @@ Actualiza los policies del agente en caliente.
 
 ## Policy System
 
-Cada policy extiende `AbstractPolicy` del Hedera Agent Kit e implementa `shouldBlockPostParamsNormalization`. Se inyectan como `AbstractHook[]` en el contexto del toolkit, interceptando **todas** las tool calls de transferencias.
+Each policy extends `AbstractPolicy` from the Hedera Agent Kit and implements `shouldBlockPostParamsNormalization`. They are injected as `AbstractHook[]` into the toolkit context, intercepting **all** transfer tool calls.
 
 ### Spend Limit
 
 ```typescript
 interface SpendLimitConfig {
-  maxPerTransaction: number    // HBAR máximos por transacción
-  maxPerSession: number        // HBAR máximos en toda la sesión
+  maxPerTransaction: number    // Max HBAR per transaction
+  maxPerSession: number        // Max HBAR for the entire session
   currency: 'HBAR'
 }
 ```
 
-- Bloquea si `amount > maxPerTransaction`
-- Bloquea si `totalSpent + amount > maxPerSession`
-- Soporta tinybars (valores >= 10,000,000 se dividen por 10^8)
+- Blocks if `amount > maxPerTransaction`
+- Blocks if `totalSpent + amount > maxPerSession`
+- Supports tinybars (values >= 10,000,000 are divided by 10^8)
 
 ### Allow List
 
 ```typescript
 interface AllowListConfig {
-  providers: string[]          // dominios o IDs permitidos
+  providers: string[]          // Allowed domains or IDs
 }
 ```
 
-- El recipient se extrae de `normalisedParams.recipients[0]` o `recipient` o `to`
-- Matching case-insensitive via `includes()`
-- Si no hay match → blocked
+- Recipient extracted from `normalisedParams.recipients[0]` or `recipient` or `to`
+- Case-insensitive matching via `includes()`
+- No match → blocked
 
 ### Require Approval
 
 ```typescript
 interface RequireApprovalConfig {
-  aboveAmount: number          // umbral en HBAR
+  aboveAmount: number          // Threshold in HBAR
   currency: 'HBAR'
-  timeoutSeconds: number       // tiempo para expirar
+  timeoutSeconds: number       // Expiration time
 }
 ```
 
-- Si `amount <= aboveAmount` → allow
-- Si no, crea un approval con ID = SHA-256(amount:recipient:method:timestamp)[:16]
-- Espera en estado `pending` hasta que el usuario apruebe/rechace
-- Expira después de `timeoutSeconds`
+- If `amount <= aboveAmount` → allow
+- Otherwise, creates an approval with ID = SHA-256(amount:recipient:method:timestamp)[:16]
+- Waits in `pending` state until the user approves/rejects
+- Expires after `timeoutSeconds`
 
 ---
 
@@ -294,8 +316,8 @@ wallet.updatePolicies(newConfigs)      // hot-reload policies
 import { getSession, resetSession, addTransaction, resolveApproval } from '@gossipay/sdk'
 
 getSession()                    // { totalSpent, transactions, pendingApprovals }
-resetSession()                  // limpia todo
-addTransaction(record)          // agrega + actualiza totalSpent
+resetSession()                  // clears everything
+addTransaction(record)          // adds + updates totalSpent
 resolveApproval(id, status)     // "approved" | "rejected"
 ```
 
@@ -303,18 +325,22 @@ resolveApproval(id, status)     // "approved" | "rejected"
 
 ## Tech Stack
 
-| Capa | Tecnología |
-|------|------------|
+| Layer | Technology |
+|-------|------------|
 | Framework | Next.js 15 (Turbopack) |
 | UI | React 19 + Tailwind CSS 3 |
-| Lenguaje | TypeScript 5.6 (strict) |
+| Language | TypeScript 5.6 (strict) |
 | Monorepo | pnpm workspaces + Turbo 2 |
 | Blockchain | Hedera testnet (@hashgraph/sdk) |
 | Agent | LangChain / LangGraph |
 | LLM | OpenAI GPT-4o / Anthropic Claude |
 | Streaming | Server-Sent Events |
 | Audit Trail | Hedera Consensus Service |
+| Telegram Bot | Telegraf 4 |
 | Testing | Vitest |
 
 ---
 
+## License
+
+MIT
