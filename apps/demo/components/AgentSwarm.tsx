@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { useSession } from '@/lib/store'
 
 type AgentState = 'active' | 'idle' | 'monitoring'
@@ -56,83 +57,83 @@ const stateColors: Record<AgentState, string> = {
   monitoring: 'bg-blue-500',
 }
 
-const stateLabels: Record<AgentState, string> = {
-  active: 'Active',
-  idle: 'Idle',
-  monitoring: 'Monitoring',
-}
-
-const palette: Record<string, { bg: string; border: string; dot: string; badge: string; badgeText: string }> = {
-  blue: {
-    bg: 'bg-blue-50/50',
-    border: 'border-blue-100',
-    dot: 'bg-blue-500',
-    badge: 'bg-blue-50 border-blue-100',
-    badgeText: 'text-blue-700',
-  },
-  green: {
-    bg: 'bg-green-50/50',
-    border: 'border-green-100',
-    dot: 'bg-green-500',
-    badge: 'bg-green-50 border-green-100',
-    badgeText: 'text-green-700',
-  },
-  purple: {
-    bg: 'bg-purple-50/50',
-    border: 'border-purple-100',
-    dot: 'bg-purple-500',
-    badge: 'bg-purple-50 border-purple-100',
-    badgeText: 'text-purple-700',
-  },
+const palette: Record<string, { border: string; bg: string; badge: string; badgeText: string }> = {
+  blue: { border: 'border-blue-100', bg: 'bg-blue-50/50', badge: 'bg-blue-50 border-blue-100', badgeText: 'text-blue-700' },
+  green: { border: 'border-green-100', bg: 'bg-green-50/50', badge: 'bg-green-50 border-green-100', badgeText: 'text-green-700' },
+  purple: { border: 'border-purple-100', bg: 'bg-purple-50/50', badge: 'bg-purple-50 border-purple-100', badgeText: 'text-purple-700' },
 }
 
 export function AgentSwarm() {
   const { state } = useSession()
+  const [expanded, setExpanded] = useState<string | null>(null)
   const txCount = state.transactions.length
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-      {agents.map((agent) => {
-        const agentState = agent.getState(txCount, state.isStreaming)
-        const action = agent.getAction(txCount, state.isStreaming)
-        const p = palette[agent.color]
+    <div className="space-y-1.5">
+      <div className="flex gap-2">
+        {agents.map((agent) => {
+          const agentState = agent.getState(txCount, state.isStreaming)
+          const p = palette[agent.color]
+          const isOpen = expanded === agent.name
 
-        return (
-          <div
-            key={agent.name}
-            className={`border ${p.border} ${p.bg} rounded-xl p-4 transition-all`}
-          >
-            <div className="flex items-start justify-between mb-3">
-              <div className="flex items-center gap-2.5">
-                <span className="text-lg">{agent.icon}</span>
-                <div>
-                  <h3 className="text-sm font-medium text-neutral-900">
+          return (
+            <button
+              key={agent.name}
+              onClick={() => setExpanded(isOpen ? null : agent.name)}
+              className={`flex-1 flex items-center gap-2 px-3 py-2 rounded-lg border text-left transition-all ${
+                isOpen
+                  ? `${p.border} ${p.bg} ring-1 ring-inset ring-neutral-200`
+                  : 'border-neutral-100 hover:border-neutral-200 hover:bg-neutral-50'
+              }`}
+            >
+              <span className="text-base">{agent.icon}</span>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-xs font-medium text-neutral-800 truncate">
                     {agent.name}
-                  </h3>
-                  <p className="text-[11px] text-neutral-400">{agent.role}</p>
+                  </span>
+                  <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${stateColors[agentState]}`} />
                 </div>
+                <p className="text-[10px] text-neutral-400 truncate">
+                  {agent.getAction(txCount, state.isStreaming)}
+                </p>
               </div>
-              <div className="flex items-center gap-1.5">
-                <span className={`w-1.5 h-1.5 rounded-full ${stateColors[agentState]}`} />
-                <span className="text-[10px] font-medium text-neutral-400">
-                  {stateLabels[agentState]}
-                </span>
+              <svg
+                className={`w-3 h-3 text-neutral-300 shrink-0 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path d="m6 9 6 6 6-6" />
+              </svg>
+            </button>
+          )
+        })}
+      </div>
+
+      {expanded && (
+        <div className="border border-neutral-100 rounded-lg p-3 text-xs text-neutral-500 space-y-2">
+          {agents
+            .filter((a) => a.name === expanded)
+            .map((agent) => (
+              <div key={agent.name}>
+                <p className="text-neutral-800 font-medium mb-1">{agent.role}</p>
+                <div className="flex flex-wrap gap-1 mb-2">
+                  {agent.tools.map((t) => (
+                    <span
+                      key={t}
+                      className={`text-[10px] px-1.5 py-0.5 rounded border ${palette[agent.color].badge} ${palette[agent.color].badgeText}`}
+                    >
+                      {t}
+                    </span>
+                  ))}
+                </div>
+                <p className="text-neutral-400">{agent.getAction(txCount, state.isStreaming)}</p>
               </div>
-            </div>
-            <p className="text-xs text-neutral-500 font-mono">{action}</p>
-            <div className="mt-2.5 flex flex-wrap gap-1">
-              {agent.tools.map((t) => (
-                <span
-                  key={t}
-                  className={`text-[10px] px-1.5 py-0.5 rounded border ${p.badge} ${p.badgeText}`}
-                >
-                  {t}
-                </span>
-              ))}
-            </div>
-          </div>
-        )
-      })}
+            ))}
+        </div>
+      )}
     </div>
   )
 }
