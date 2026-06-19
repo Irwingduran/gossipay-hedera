@@ -356,7 +356,7 @@ export default function Home() {
             </a>
           </div>
           <p className="mt-16 text-xs text-neutral-600">
-            gossipay &mdash; Hedera AI Studio Challenge 2026. MIT License.
+            gossipay &mdash; Hedera &mdash; 2026.
           </p>
         </div>
       </section>
