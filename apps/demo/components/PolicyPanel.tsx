@@ -67,7 +67,7 @@ export function PolicyPanel() {
     .reduce((s, t) => s + t.amount, 0)
 
   return (
-    <div className="px-5 py-4 border-b border-neutral-100">
+    <div className="px-5 py-4">
       <h2 className="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-3">
         Policies
       </h2>

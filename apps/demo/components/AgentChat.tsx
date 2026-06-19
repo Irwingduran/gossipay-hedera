@@ -24,9 +24,22 @@ export function AgentChat() {
   }
 
   const suggestedQueries = [
-    'Research the LatAm SaaS market and buy a market report for 1.5 HBAR',
-    'Analyze competitors and send 0.5 HBAR to api.coincap.io for BTC price',
-    'Show me the audit trail of all transactions on HCS',
+    {
+      label: 'Research the LatAm SaaS market and buy a report for 1.5 HBAR',
+      icon: '🔍',
+    },
+    {
+      label: 'Analyze competitors and pay 0.5 HBAR to api.coincap.io for BTC price',
+      icon: '📊',
+    },
+    {
+      label: 'Show the full audit trail of all HCS transactions',
+      icon: '📜',
+    },
+    {
+      label: 'Send 2 HBAR to gossipay.xyz for a market report',
+      icon: '⚡',
+    },
   ]
 
   return (
@@ -34,25 +47,25 @@ export function AgentChat() {
       <div className="flex-1 overflow-y-auto px-6 py-6 space-y-4">
         {state.messages.length === 0 && !isStreaming && (
           <div className="flex flex-col items-center justify-center h-full text-center py-16">
-            <div className="w-12 h-12 rounded-full bg-neutral-100 flex items-center justify-center mb-4">
-              <span className="text-lg">🧠</span>
+            <div className="w-14 h-14 rounded-2xl bg-neutral-100 flex items-center justify-center mb-5">
+              <span className="text-2xl">🧠</span>
             </div>
             <h2 className="font-serif text-2xl text-neutral-900">
               Command center
             </h2>
             <p className="mt-2 text-sm text-neutral-400 max-w-md leading-relaxed">
-              Talk to your agent swarm. They can research markets, execute
-              payments, and log everything on HCS — all within your configured
-              policies.
+              Talk to your agent swarm. Each agent has its own wallet, policies,
+              and role — all working within your configured guardrails.
             </p>
-            <div className="mt-6 flex flex-col gap-2">
+            <div className="mt-8 flex flex-col gap-2 w-full max-w-lg">
               {suggestedQueries.map((q) => (
                 <button
-                  key={q}
-                  onClick={() => sendMessage(q)}
-                  className="text-sm text-left text-neutral-500 border border-neutral-200 rounded-lg px-4 py-2.5 max-w-lg hover:border-neutral-400 hover:text-neutral-700 transition-colors"
+                  key={q.label}
+                  onClick={() => sendMessage(q.label)}
+                  className="flex items-start gap-3 text-left text-sm text-neutral-500 border border-neutral-200 rounded-xl px-4 py-3 hover:border-neutral-400 hover:text-neutral-700 hover:bg-neutral-50 transition-all"
                 >
-                  {q}
+                  <span className="text-base shrink-0 mt-0.5">{q.icon}</span>
+                  <span>{q.label}</span>
                 </button>
               ))}
             </div>

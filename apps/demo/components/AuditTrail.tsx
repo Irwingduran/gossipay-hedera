@@ -10,7 +10,7 @@ export function AuditTrail() {
   const pendingCount = state.transactions.filter((t) => t.status === 'pending_approval').length
 
   return (
-    <div className="px-5 py-4 border-b border-neutral-100">
+    <div className="px-5 py-4">
       <h2 className="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-3">
         HCS Audit trail
       </h2>
