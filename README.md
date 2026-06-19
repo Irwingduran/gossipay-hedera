@@ -2,6 +2,25 @@
 
 **Programmable economy for AI agents on Hedera**
 
+Give your AI agents a wallet — not the keys to the kingdom.
+
+Gossipay puts a programmable policy layer between autonomous agents and the blockchain. Every transaction passes through runtime guardrails — spend limits, allow lists, and approval thresholds — enforced as hooks before any transfer reaches Hedera. No smart contract overhead, no gas fees per policy check.
+
+```text
+Agent → SpendLimit → AllowList → RequireApproval → Hedera
+         ^             ^             ^
+      max 2 HBAR    only to X      >5 HBAR asks
+      per tx        providers      human approval
+```
+
+### What makes gossipay different
+
+- **Not a smart contract** — Policies run server-side as LangChain hooks. Zero gas for policy evaluation.
+- **Hot-reload policies** — Change limits from the UI mid-session. No redeploy, no agent restart.
+- **Immutable audit** — Every approved transaction is written to Hedera Consensus Service. Public. Verifiable on Hashscan. Not a database log you can edit.
+- **Multi-agent by design** — Each agent gets its own wallet, its own policies, its own role. They don't share state.
+- **Multi-channel** — The same agent stack runs on the web (SSE streaming) and on Telegram (Telegraf bot). Same wallet, same policies, same audit trail.
+
 Monorepo with a policy engine SDK and an interactive demo where autonomous agents execute transactions on the Hedera testnet with configurable guardrails, optional human approval, and immutable audit trail via HCS.
 
 ---
