@@ -33,14 +33,15 @@ export default function Home() {
               Hedera
             </div>
             <h1 className="font-serif text-5xl sm:text-6xl lg:text-7xl tracking-tight text-neutral-900 leading-[1.05]">
-              The agent commerce
+              Give your AI agents
               <br />
-              <span className="text-neutral-400">network</span>
+              <span className="text-neutral-400">a wallet. Set the rules.</span>
             </h1>
             <p className="mt-6 text-base sm:text-lg text-neutral-500 leading-relaxed max-w-lg">
-              Deploy autonomous AI agents with programmable wallets,
-              configurable policies, and immutable audit trails on{' '}
-              <span className="text-neutral-800 font-medium">Hedera</span>.
+              Let autonomous agents transact on Hedera — with{' '}
+              <span className="text-neutral-800 font-medium">programmable guardrails</span>{' '}
+              that enforce spend limits, allow lists, and approval flows
+              before any transaction reaches the network.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row items-start gap-4">
               <Link
@@ -84,19 +85,70 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ───── For developers ───── */}
+      {/* ───── Policy flow ───── */}
       <section className="px-6 py-24 border-t border-neutral-100">
+        <div className="max-w-4xl mx-auto text-center">
+          <p className="text-xs font-medium text-neutral-400 uppercase tracking-widest mb-4">
+            The problem
+          </p>
+          <h2 className="font-serif text-3xl sm:text-4xl text-neutral-900 leading-tight">
+            Give your AI agent an API key and it can spend anything, anywhere.
+          </h2>
+          <p className="mt-3 text-neutral-500 max-w-2xl mx-auto">
+            Gossipay puts a programmable policy layer between the agent and the
+            blockchain. Every transaction passes through runtime guardrails — no
+            smart contract overhead, no gas fees for policy checks.
+          </p>
+
+          <div className="mt-12 flex flex-col items-center gap-0">
+            {/* Flow diagram */}
+            <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-sm">
+              <div className="px-5 py-3 rounded-xl border-2 border-blue-200 bg-blue-50 text-blue-800 font-semibold text-xs sm:text-sm">
+                Agent
+              </div>
+              <svg width="24" height="24" viewBox="0 0 24 24" className="text-neutral-300 shrink-0 -scale-x-100"><path d="M5 12h14" stroke="currentColor" strokeWidth="2" fill="none"/><path d="m12 5 7 7-7 7" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              <div className="px-5 py-3 rounded-xl border-2 border-amber-200 bg-amber-50 text-amber-800 font-semibold text-xs sm:text-sm">
+                Spend Limit
+              </div>
+              <svg width="24" height="24" viewBox="0 0 24 24" className="text-neutral-300 shrink-0 -scale-x-100"><path d="M5 12h14" stroke="currentColor" strokeWidth="2" fill="none"/><path d="m12 5 7 7-7 7" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              <div className="px-5 py-3 rounded-xl border-2 border-emerald-200 bg-emerald-50 text-emerald-800 font-semibold text-xs sm:text-sm">
+                Allow List
+              </div>
+              <svg width="24" height="24" viewBox="0 0 24 24" className="text-neutral-300 shrink-0 -scale-x-100"><path d="M5 12h14" stroke="currentColor" strokeWidth="2" fill="none"/><path d="m12 5 7 7-7 7" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              <div className="px-5 py-3 rounded-xl border-2 border-red-200 bg-red-50 text-red-800 font-semibold text-xs sm:text-sm">
+                Approval
+              </div>
+              <svg width="24" height="24" viewBox="0 0 24 24" className="text-neutral-300 shrink-0 -scale-x-100"><path d="M5 12h14" stroke="currentColor" strokeWidth="2" fill="none"/><path d="m12 5 7 7-7 7" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              <div className="px-5 py-3 rounded-xl border-2 border-purple-200 bg-purple-50 text-purple-800 font-semibold text-xs sm:text-sm">
+                Hedera
+              </div>
+            </div>
+            <div className="mt-3 flex flex-wrap items-center justify-center gap-4 sm:gap-8 text-[11px] text-neutral-400">
+              <span>max 2 HBAR per tx</span>
+              <span className="hidden sm:inline">&middot;</span>
+              <span>only to approved providers</span>
+              <span className="hidden sm:inline">&middot;</span>
+              <span>&gt;5 HBAR asks human approval</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ───── For developers ───── */}
+      <section className="px-6 py-24 border-t border-neutral-100 bg-neutral-50/50">
         <div className="max-w-5xl mx-auto">
           <p className="text-xs font-medium text-neutral-400 uppercase tracking-widest mb-4">
             For developers
           </p>
           <h2 className="font-serif text-3xl sm:text-4xl text-neutral-900 leading-tight">
-            Three lines to deploy an agent economy
+            Three lines to deploy a wallet with guardrails
           </h2>
           <p className="mt-3 text-neutral-500 max-w-2xl">
-            gossipay is an open-source SDK that extends the Hedera Agent Kit with
-            programmable policies. Each agent gets its own wallet, its own rules,
-            and its own tools.
+            gossipay extends the Hedera Agent Kit with{' '}
+            <span className="text-neutral-800 font-medium">programmable policies</span>
+            — not a new framework, not a smart contract. Each agent gets its own
+            wallet, its own rules, and its own tool belt. Hot-reload policies without
+            restarting.
           </p>
           <div className="mt-10 grid lg:grid-cols-2 gap-6">
             <CodeBlock
@@ -287,40 +339,48 @@ export default function Home() {
         </span>
       </a>
 
-      {/* ───── Enterprise features ───── */}
+      {/* ───── Why gossipay ───── */}
       <section className="px-6 py-24 border-t border-neutral-100">
         <div className="max-w-5xl mx-auto">
           <p className="text-xs font-medium text-neutral-400 uppercase tracking-widest mb-4">
-            Enterprise
+            Why gossipay
           </p>
           <h2 className="font-serif text-3xl sm:text-4xl text-neutral-900 leading-tight">
-            Safety, transparency, control
+            Not a smart contract. Not a dashboard.
+            <br />
+            <span className="text-neutral-400">A policy layer for AI agents.</span>
           </h2>
-          <p className="mt-3 text-neutral-500 max-w-2xl">
-            gossipay is built for financial operations that demand
-            cryptographic guarantees and human oversight.
-          </p>
 
-          <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             <FeatureCard
-              icon="🛡️"
-              title="Three guardrails"
-              desc="Spend limits, allow lists, and approval thresholds — enforced at runtime before any transaction reaches Hedera."
+              icon="⚡"
+              title="Server-side policies"
+              desc="Policies run as LangChain hooks, not smart contracts. Zero gas fees for policy evaluation. No consensus delay."
+            />
+            <FeatureCard
+              icon="🔄"
+              title="Hot-reload guardrails"
+              desc="Change spend limits, allow lists, or approval thresholds mid-session via API or UI. No redeploy, no agent restart."
             />
             <FeatureCard
               icon="📜"
-              title="Immutable audit"
-              desc="Every approved transaction is logged on Hedera Consensus Service. Viewable on Hashscan. Tamper-proof."
+              title="Immutable audit trail"
+              desc="Every approved transaction is logged to Hedera Consensus Service. Public. Verifiable on Hashscan. Tamper-proof by design."
             />
             <FeatureCard
-              icon="👤"
-              title="Human-in-the-loop"
-              desc="Configurable approval flows. High-value transactions pause and wait for human sign-off before execution."
+              icon="🧩"
+              title="Multi-agent by design"
+              desc="Each agent gets its own wallet, its own policies, its own role. Research, procurement, and audit agents never share state."
             />
             <FeatureCard
-              icon="⚙️"
-              title="Hot-reload policies"
-              desc="Update policies without restarting agents. Changes take effect on the next tool call."
+              icon="📱"
+              title="Multi-channel"
+              desc="The same agent stack runs on the web (SSE streaming) and on Telegram (Telegraf bot). Same wallet, same policies, same audit."
+            />
+            <FeatureCard
+              icon="🔗"
+              title="Built on Hedera"
+              desc="Transfers settle in seconds on Hedera testnet. No mining, no mempool, no front-running. Deterministic finality."
             />
           </div>
         </div>
@@ -330,11 +390,13 @@ export default function Home() {
       <section className="px-6 py-24 border-t border-neutral-100 bg-neutral-900 text-white">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="font-serif text-3xl sm:text-4xl leading-tight">
-            Build your agent economy
+            Give your agents a wallet.
+            <br />
+            <span className="text-neutral-400">Set the rules. Let them trade.</span>
           </h2>
           <p className="mt-4 text-neutral-400 text-sm leading-relaxed max-w-lg mx-auto">
             Spin up the demo, configure policies, and watch agents trade on
-            Hedera testnet in real-time. Full SDK available on GitHub.
+            Hedera testnet in real-time. The full SDK is on GitHub.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
