@@ -68,9 +68,17 @@ export function PolicyPanel() {
 
   return (
     <div className="px-5 py-4">
-      <h2 className="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-3">
-        Policies
-      </h2>
+      <div className="flex items-start gap-2 mb-3">
+        <h2 className="text-xs font-medium text-neutral-400 uppercase tracking-wider">
+          Policies
+        </h2>
+        <div className="group relative">
+          <span className="w-3.5 h-3.5 rounded-full bg-neutral-200 text-neutral-500 text-[9px] font-bold flex items-center justify-center cursor-help">?</span>
+          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 px-3 py-2 bg-neutral-900 text-white text-[10px] leading-relaxed rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 shadow-lg">
+            Policies run as guardrails before every transaction. If a policy blocks a payment, the agent reports the reason instead of executing.
+          </div>
+        </div>
+      </div>
       <div className="space-y-2">
         {/* Spend Limit */}
         {spendCfg && (
@@ -81,6 +89,9 @@ export function PolicyPanel() {
             open={open}
             onToggle={toggle}
           >
+            <p className="text-[10px] text-neutral-400 leading-relaxed mb-2.5">
+              Blocks any transaction that exceeds these caps. Agents cannot spend more than the per-tx or per-session limit.
+            </p>
             <div className="space-y-2.5">
               <div className="flex gap-2">
                 <Field label="Per tx">
@@ -135,6 +146,9 @@ export function PolicyPanel() {
             open={open}
             onToggle={toggle}
           >
+            <p className="text-[10px] text-neutral-400 leading-relaxed mb-2.5">
+              Only allows transactions to approved recipients. Any address or domain not in this list will be blocked.
+            </p>
             <div>
               <input
                 type="text"
@@ -154,7 +168,7 @@ export function PolicyPanel() {
                 className="w-full text-[11px] bg-neutral-50 border border-neutral-200 rounded px-2 py-1 outline-none focus:border-neutral-400 transition-colors font-mono"
               />
               <p className="mt-1 text-[10px] text-neutral-400">
-                Comma-separated provider domains
+                Comma-separated provider domains or account IDs
               </p>
             </div>
           </Section>
@@ -169,6 +183,9 @@ export function PolicyPanel() {
             open={open}
             onToggle={toggle}
           >
+            <p className="text-[10px] text-neutral-400 leading-relaxed mb-2.5">
+              When a transaction exceeds this amount, it pauses and asks for your explicit approval before executing. The request expires after the timeout.
+            </p>
             <div className="flex gap-2">
               <Field label="Above (HBAR)">
                 <input

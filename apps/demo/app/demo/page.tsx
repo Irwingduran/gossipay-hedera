@@ -7,8 +7,10 @@ import { PolicyPanel } from '@/components/PolicyPanel'
 import { TransactionFeed } from '@/components/TransactionFeed'
 import { AuditTrail } from '@/components/AuditTrail'
 import { ApprovalModal } from '@/components/ApprovalModal'
+import { WelcomeDashboard } from '@/components/WelcomeDashboard'
 import { useHashConnect } from '@/lib/hooks/useHashConnect'
 import { useSession } from '@/lib/store'
+import { useAgentStream } from '@/lib/hooks/useAgentStream'
 
 type RightTab = 'chat' | 'activity'
 type SideTab = 'policies' | 'audit'
@@ -76,9 +78,9 @@ function WalletModal({ onClose }: { onClose: () => void }) {
   const { connect, inputRef, installed } = useHashConnect()
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
       <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-sm mx-4 p-6">
+      <div className="relative bg-white sm:rounded-2xl rounded-t-2xl shadow-xl w-full sm:max-w-sm sm:mx-4 p-6 pb-8 sm:pb-6">
         <button onClick={onClose} className="absolute top-4 right-4 text-neutral-400 hover:text-neutral-600 transition-colors">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <line x1="18" y1="6" x2="6" y2="18" />
@@ -153,23 +155,34 @@ export default function DemoPage() {
   const [rightTab, setRightTab] = useState<RightTab>('chat')
   const [sideTab, setSideTab] = useState<SideTab>('policies')
   const [showWalletModal, setShowWalletModal] = useState(false)
+  const [showSidebar, setShowSidebar] = useState(false)
   const { state, dispatch } = useSession()
   const { accountId } = useHashConnect()
+  const { sendMessage } = useAgentStream()
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden bg-white">
-      <header className="shrink-0 border-b border-neutral-100 px-6 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-3">
+    <div className="h-dvh flex flex-col bg-white">
+      <header className="shrink-0 border-b border-neutral-100 px-3 md:px-6 py-3 flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2 md:gap-3 min-w-0">
+          {accountId && (
+            <button onClick={() => setShowSidebar(!showSidebar)} className="md:hidden text-neutral-400 hover:text-neutral-600 transition-colors shrink-0">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="18" x2="21" y2="18" />
+              </svg>
+            </button>
+          )}
           <a href="/">
           <h1 className="font-serif text-lg tracking-tight text-neutral-900">
             gossipay
           </h1>
           </a>
-          <span className="text-[10px] text-neutral-300 bg-neutral-50 border border-neutral-100 rounded-full px-2 py-0.5">
+          <span className="hidden md:inline text-[10px] text-neutral-300 bg-neutral-50 border border-neutral-100 rounded-full px-2 py-0.5">
             mission control
           </span>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 md:gap-3">
           {accountId ? (
             <WalletBadge
               accountId={accountId}
@@ -183,13 +196,13 @@ export default function DemoPage() {
               Connect wallet
             </button>
           )}
-          <span className="flex items-center gap-1.5 text-[11px] text-neutral-400">
+          <span className="hidden sm:flex items-center gap-1.5 text-[11px] text-neutral-400">
             <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
             Hedera testnet
           </span>
           <a
             href="/"
-            className="text-[11px] text-neutral-400 hover:text-neutral-600 transition-colors"
+            className="hidden sm:inline text-[11px] text-neutral-400 hover:text-neutral-600 transition-colors"
           >
             Home
           </a>
@@ -198,12 +211,12 @@ export default function DemoPage() {
 
       {!accountId ? (
         <main className="flex-1 overflow-y-auto">
-          <div className="max-w-3xl mx-auto px-6 py-20">
-            <div className="mb-16 text-center">
-              <h2 className="font-serif text-4xl text-neutral-900 mb-4 leading-tight">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 py-12 sm:py-20">
+            <div className="mb-12 sm:mb-16 text-center">
+              <h2 className="font-serif text-3xl sm:text-4xl text-neutral-900 mb-4 leading-tight">
                 Multi-agent payment orchestration on Hedera
               </h2>
-              <p className="text-base text-neutral-400 max-w-xl mx-auto leading-relaxed">
+              <p className="text-sm sm:text-base text-neutral-400 max-w-xl mx-auto leading-relaxed">
                 Gossipay is an agentic payment infrastructure. Deploy autonomous agents that
                 execute, audit, and coordinate transactions on the Hedera network — all through
                 natural language.
@@ -214,7 +227,7 @@ export default function DemoPage() {
               <h3 className="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-5 text-center">
                 What you can do
               </h3>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {capabilities.map((c) => (
                   <div
                     key={c.title}
@@ -245,79 +258,94 @@ export default function DemoPage() {
           </div>
         </main>
       ) : (
-        <div className="flex-1 flex overflow-hidden">
-          <aside className="w-96 border-r border-neutral-100 flex flex-col overflow-hidden shrink-0">
-            <div className="px-5 pt-5 pb-4 border-b border-neutral-100">
-              <div className="flex items-center justify-between mb-3">
-                <h2 className="text-xs font-medium text-neutral-400 uppercase tracking-wider">
-                  Agent network
-                </h2>
-              </div>
+        <div className="flex-1 flex overflow-hidden relative">
+          {/* Sidebar overlay backdrop */}
+          {showSidebar && (
+            <div className="md:hidden fixed inset-0 z-30 bg-black/20" onClick={() => setShowSidebar(false)} />
+          )}
+
+          {/* Sidebar */}
+          <aside className={`absolute md:relative z-40 md:z-auto inset-y-0 left-0 w-80 md:w-96 border-r border-neutral-100 bg-white flex flex-col overflow-hidden shrink-0 transition-transform md:translate-x-0 ${showSidebar ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
+            <div className="flex items-center justify-between px-4 md:px-5 pt-4 pb-3 border-b border-neutral-100">
+              <h2 className="text-xs font-medium text-neutral-400 uppercase tracking-wider">
+                Agent network
+              </h2>
+              <button onClick={() => setShowSidebar(false)} className="md:hidden text-neutral-400 hover:text-neutral-600">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            </div>
+            <div className="px-4 md:px-5 pb-4 border-b border-neutral-100">
               <AgentSwarm />
             </div>
-
-            <div className="flex-1 flex flex-col overflow-hidden">
-              <div className="flex border-b border-neutral-100 shrink-0">
-                <button
-                  onClick={() => setSideTab('policies')}
-                  className={`flex-1 text-xs font-medium py-2.5 transition-colors ${
-                    sideTab === 'policies'
-                      ? 'text-neutral-900 border-b-2 border-neutral-900'
-                      : 'text-neutral-400 hover:text-neutral-600'
-                  }`}
-                >
-                  Policies
-                </button>
-                <button
-                  onClick={() => setSideTab('audit')}
-                  className={`flex-1 text-xs font-medium py-2.5 transition-colors ${
-                    sideTab === 'audit'
-                      ? 'text-neutral-900 border-b-2 border-neutral-900'
-                      : 'text-neutral-400 hover:text-neutral-600'
-                  }`}
-                >
-                  Audit trail
-                </button>
-              </div>
-              <div className="flex-1 overflow-y-auto">
-                {sideTab === 'policies' ? <PolicyPanel /> : <AuditTrail />}
-              </div>
+            <div className="flex border-b border-neutral-100 shrink-0">
+              <button
+                onClick={() => setSideTab('policies')}
+                className={`flex-1 text-xs font-medium py-2.5 transition-colors ${
+                  sideTab === 'policies'
+                    ? 'text-neutral-900 border-b-2 border-neutral-900'
+                    : 'text-neutral-400 hover:text-neutral-600'
+                }`}
+              >
+                Policies
+              </button>
+              <button
+                onClick={() => setSideTab('audit')}
+                className={`flex-1 text-xs font-medium py-2.5 transition-colors ${
+                  sideTab === 'audit'
+                    ? 'text-neutral-900 border-b-2 border-neutral-900'
+                    : 'text-neutral-400 hover:text-neutral-600'
+                }`}
+              >
+                Audit trail
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto">
+              {sideTab === 'policies' ? <PolicyPanel /> : <AuditTrail />}
             </div>
           </aside>
 
-          <main className="flex-1 flex flex-col overflow-hidden">
-            <div className="flex border-b border-neutral-100 shrink-0">
-              <button
-                onClick={() => setRightTab('chat')}
-                className={`flex items-center gap-2 px-6 py-2.5 text-xs font-medium transition-colors ${
-                  rightTab === 'chat'
-                    ? 'text-neutral-900 border-b-2 border-neutral-900'
-                    : 'text-neutral-400 hover:text-neutral-600'
-                }`}
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                </svg>
-                Chat
-              </button>
-              <button
-                onClick={() => setRightTab('activity')}
-                className={`flex items-center gap-2 px-6 py-2.5 text-xs font-medium transition-colors ${
-                  rightTab === 'activity'
-                    ? 'text-neutral-900 border-b-2 border-neutral-900'
-                    : 'text-neutral-400 hover:text-neutral-600'
-                }`}
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-                </svg>
-                Activity
-              </button>
-            </div>
+          <main className="flex-1 flex flex-col overflow-hidden min-w-0">
+            {state.messages.length === 0 ? (
+              <WelcomeDashboard onSend={sendMessage} />
+            ) : (
+              <>
+                <div className="flex border-b border-neutral-100 shrink-0">
+                  <button
+                    onClick={() => setRightTab('chat')}
+                    className={`flex items-center gap-2 px-4 sm:px-6 py-2.5 text-xs font-medium transition-colors ${
+                      rightTab === 'chat'
+                        ? 'text-neutral-900 border-b-2 border-neutral-900'
+                        : 'text-neutral-400 hover:text-neutral-600'
+                    }`}
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                    </svg>
+                    Chat
+                  </button>
+                  <button
+                    onClick={() => setRightTab('activity')}
+                    className={`flex items-center gap-2 px-4 sm:px-6 py-2.5 text-xs font-medium transition-colors ${
+                      rightTab === 'activity'
+                        ? 'text-neutral-900 border-b-2 border-neutral-900'
+                        : 'text-neutral-400 hover:text-neutral-600'
+                    }`}
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                    </svg>
+                    Activity
+                  </button>
+                </div>
 
-            <div className="flex-1 overflow-hidden">
-              {rightTab === 'chat' ? <AgentChat /> : <TransactionFeed />}
-            </div>
+                <div className="flex-1 overflow-hidden">
+                  {rightTab === 'chat' ? <AgentChat /> : <TransactionFeed />}
+                </div>
+              </>
+            )}
           </main>
         </div>
       )}

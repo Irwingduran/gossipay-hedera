@@ -6,17 +6,17 @@ export default function Home() {
     <>
       {/* ───── Navbar ───── */}
       <nav className="fixed top-0 left-0 right-0 z-50 border-b border-neutral-100 bg-white/80 backdrop-blur-sm">
-        <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
-          <Link href="/" className="font-serif text-lg tracking-tight text-neutral-900">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-12 sm:h-14 flex items-center justify-between">
+          <Link href="/" className="font-serif text-base sm:text-lg tracking-tight text-neutral-900">
             gossipay
           </Link>
-          <div className="flex items-center gap-6">
-            <Link href="/docs" className="text-sm text-neutral-500 hover:text-neutral-800 transition-colors">
+          <div className="flex items-center gap-4 sm:gap-6">
+            <Link href="/docs" className="text-xs sm:text-sm text-neutral-500 hover:text-neutral-800 transition-colors">
               Docs
             </Link>
             <Link
               href="/demo"
-              className="text-sm font-medium text-white bg-neutral-900 px-4 py-1.5 rounded-lg hover:bg-neutral-800 transition-colors"
+              className="text-xs sm:text-sm font-medium text-white bg-neutral-900 px-3 sm:px-4 py-1.5 rounded-lg hover:bg-neutral-800 transition-colors"
             >
               Demo
             </Link>
@@ -25,28 +25,28 @@ export default function Home() {
       </nav>
 
       {/* ───── Hero ───── */}
-      <section className="min-h-screen flex items-center px-6 py-24">
-        <div className="max-w-6xl mx-auto w-full grid lg:grid-cols-2 gap-16 items-center">
-          <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 mb-8 text-xs text-neutral-500 bg-neutral-50 border border-neutral-200 rounded-full">
+      <section className="min-h-screen flex items-center px-4 sm:px-6 py-16 sm:py-24">
+        <div className="max-w-6xl mx-auto w-full grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+          <div className="text-center sm:text-left">
+            <div className="inline-flex items-center gap-2 px-3 py-1 mb-6 sm:mb-8 text-xs text-neutral-500 bg-neutral-50 border border-neutral-200 rounded-full">
               <span className="w-1.5 h-1.5 bg-purple-800 rounded-full animate-pulse" />
               Hedera
             </div>
-            <h1 className="font-serif text-5xl sm:text-6xl lg:text-7xl tracking-tight text-neutral-900 leading-[1.05]">
+            <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight text-neutral-900 leading-[1.08] sm:leading-[1.05]">
               Give your AI agents
               <br />
               <span className="text-neutral-400">a wallet. Set the rules.</span>
             </h1>
-            <p className="mt-6 text-base sm:text-lg text-neutral-500 leading-relaxed max-w-lg">
+            <p className="mt-5 sm:mt-6 text-sm sm:text-base lg:text-lg text-neutral-500 leading-relaxed max-w-lg mx-auto sm:mx-0">
               Let autonomous agents transact on Hedera — with{' '}
               <span className="text-neutral-800 font-medium">programmable guardrails</span>{' '}
               that enforce spend limits, allow lists, and approval flows
               before any transaction reaches the network.
             </p>
-            <div className="mt-8 flex flex-col sm:flex-row items-start gap-4">
+            <div className="mt-8 flex flex-col sm:flex-row items-center sm:items-start gap-3 sm:gap-4">
               <Link
                 href="/demo"
-                className="inline-flex items-center gap-2 px-6 py-3 text-sm font-medium text-white bg-neutral-900 rounded-lg hover:bg-neutral-800 transition-colors shadow-sm"
+                className="inline-flex items-center gap-2 px-6 py-3 text-sm font-medium text-white bg-neutral-900 rounded-lg hover:bg-neutral-800 transition-colors shadow-sm w-full sm:w-auto justify-center"
               >
                 Launch demo
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -55,7 +55,7 @@ export default function Home() {
               </Link>
               <Link
                 href="/docs"
-                className="inline-flex items-center gap-2 px-6 py-3 text-sm font-medium text-neutral-600 border border-neutral-200 rounded-lg hover:border-neutral-300 hover:text-neutral-800 transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3 text-sm font-medium text-neutral-600 border border-neutral-200 rounded-lg hover:border-neutral-300 hover:text-neutral-800 transition-colors w-full sm:w-auto justify-center"
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
@@ -70,7 +70,7 @@ export default function Home() {
                 href="https://github.com/Irwingduran/gossipay-hedera"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-3 text-sm font-medium text-neutral-600 border border-neutral-200 rounded-lg hover:border-neutral-300 hover:text-neutral-800 transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3 text-sm font-medium text-neutral-600 border border-neutral-200 rounded-lg hover:border-neutral-300 hover:text-neutral-800 transition-colors w-full sm:w-auto justify-center"
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
@@ -79,14 +79,14 @@ export default function Home() {
               </a>
             </div>
           </div>
-          <div className="hidden lg:block">
+          <div className="hidden sm:block lg:block max-w-sm mx-auto sm:max-w-none">
             <HeroVisual />
           </div>
         </div>
       </section>
 
-     {/* ───── Setup / Onboarding ───── */}
-      <section className="px-6 py-24 border-t border-neutral-100 bg-neutral-50/50">
+      {/* ───── Setup / Onboarding ───── */}
+      <section className="w-full px-4 sm:px-6 py-16 sm:py-24 border-t border-neutral-100 bg-neutral-50/50">
         <div className="max-w-5xl mx-auto">
           <p className="text-xs font-medium text-neutral-400 uppercase tracking-widest mb-4">
             Setup
@@ -185,7 +185,7 @@ export default function Home() {
       </section>
       
       {/* ───── Policy flow ───── */}
-      <section className="px-6 py-24 border-t border-neutral-100">
+      <section className="px-4 sm:px-6 py-16 sm:py-24 border-t border-neutral-100">
         <div className="max-w-4xl mx-auto text-center">
           <p className="text-xs font-medium text-neutral-400 uppercase tracking-widest mb-4">
             The problem
@@ -235,7 +235,7 @@ export default function Home() {
 
 
       {/* ───── For developers ───── */}
-      <section className="px-6 py-24 border-t border-neutral-100 bg-neutral-50/50">
+      <section className="px-4 sm:px-6 py-16 sm:py-24 border-t border-neutral-100 bg-neutral-50/50">
         <div className="max-w-5xl mx-auto">
           <p className="text-xs font-medium text-neutral-400 uppercase tracking-widest mb-4">
             For developers
@@ -272,7 +272,7 @@ export default function Home() {
               code={`for await (const event of streamAgentEvents(sessionId, msg)) {\n  switch (event.event) {\n    case 'token':       // LLM tokens\n    case 'transaction':  // Hedera tx results\n    case 'pending_approval': // Human needed\n  }\n}`}
             />
           </div>
-          <div className="mt-8 flex items-center gap-6 text-sm text-neutral-500">
+          <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-neutral-500">
             <span className="flex items-center gap-2">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-green-500"><path d="M20 6 9 17l-5-5"/></svg>
               TypeScript &bull; ESM &bull; Strict
@@ -290,7 +290,7 @@ export default function Home() {
       </section>
 
       {/* ───── Architecture ───── */}
-      <section className="px-6 py-24 border-t border-neutral-100 bg-neutral-50/50">
+      <section className="px-4 sm:px-6 py-16 sm:py-24 border-t border-neutral-100 bg-neutral-50/50">
         <div className="max-w-5xl mx-auto">
           <p className="text-xs font-medium text-neutral-400 uppercase tracking-widest mb-4">
             Architecture
@@ -340,7 +340,7 @@ export default function Home() {
       </section>
 
       {/* ───── Telegram Bot ───── */}
-      <section className="px-6 py-24 border-t border-neutral-100 bg-neutral-50/50">
+      <section className="px-4 sm:px-6 py-16 sm:py-24 border-t border-neutral-100 bg-neutral-50/50">
         <div className="max-w-5xl mx-auto">
           <p className="text-xs font-medium text-neutral-400 uppercase tracking-widest mb-4">
             Telegram
@@ -440,7 +440,7 @@ export default function Home() {
       </a>
 
       {/* ───── Why gossipay ───── */}
-      <section className="px-6 py-24 border-t border-neutral-100">
+      <section className="px-4 sm:px-6 py-16 sm:py-24 border-t border-neutral-100">
         <div className="max-w-5xl mx-auto">
           <p className="text-xs font-medium text-neutral-400 uppercase tracking-widest mb-4">
             Why gossipay
@@ -487,7 +487,7 @@ export default function Home() {
       </section>
 
       {/* ───── CTA ───── */}
-      <section className="px-6 py-24 border-t border-neutral-100 bg-neutral-900 text-white">
+      <section className="px-4 sm:px-6 py-16 sm:py-24 border-t border-neutral-100 bg-neutral-900 text-white">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="font-serif text-3xl sm:text-4xl leading-tight">
             Give your agents a wallet.
@@ -533,8 +533,8 @@ function CodeBlock({ title, code, lang }: { title: string; code: string; lang: s
         <span className="text-xs font-medium text-neutral-500">{title}</span>
         <span className="text-[10px] text-neutral-400 font-mono">{lang}</span>
       </div>
-      <pre className="p-4 text-xs font-mono text-neutral-700 leading-relaxed overflow-x-auto">
-        <code>{code}</code>
+      <pre className="p-4 text-xs font-mono text-neutral-700 leading-relaxed overflow-x-auto whitespace-pre max-w-full">
+        <code className="max-w-full">{code}</code>
       </pre>
     </div>
   )
