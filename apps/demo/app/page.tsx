@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { NetworkDiagram } from '@/components/NetworkDiagram'
+import { HeroVisual } from '@/components/HeroVisual'
 
 export default function Home() {
   return (
@@ -80,11 +80,110 @@ export default function Home() {
             </div>
           </div>
           <div className="hidden lg:block">
-            <NetworkDiagram />
+            <HeroVisual />
           </div>
         </div>
       </section>
 
+     {/* ───── Setup / Onboarding ───── */}
+      <section className="px-6 py-24 border-t border-neutral-100 bg-neutral-50/50">
+        <div className="max-w-5xl mx-auto">
+          <p className="text-xs font-medium text-neutral-400 uppercase tracking-widest mb-4">
+            Setup
+          </p>
+          <h2 className="font-serif text-3xl sm:text-4xl text-neutral-900 leading-tight">
+            Everything you need to get started
+          </h2>
+          <p className="mt-3 text-neutral-500 max-w-2xl">
+            Four steps and you&apos;ll have agents trading on Hedera testnet.
+          </p>
+
+          <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="bg-white border border-neutral-200 rounded-xl p-6">
+              <div className="w-8 h-8 rounded-full bg-neutral-900 text-white text-xs font-bold flex items-center justify-center mb-4">
+                1
+              </div>
+              <h3 className="text-sm font-semibold text-neutral-900 mb-2">
+                Install HashPack
+              </h3>
+              <p className="text-xs text-neutral-500 leading-relaxed mb-4">
+                A Hedera wallet browser extension. Available for Chrome, Brave, Edge, and Firefox.
+              </p>
+              <a
+                href="https://www.hashpack.app/download"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs font-medium text-white bg-neutral-900 px-3 py-2 rounded-lg hover:bg-neutral-800 transition-colors"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="7 10 12 15 17 10" />
+                  <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+                Download
+              </a>
+            </div>
+
+            <div className="bg-white border border-neutral-200 rounded-xl p-6">
+              <div className="w-8 h-8 rounded-full bg-neutral-900 text-white text-xs font-bold flex items-center justify-center mb-4">
+                2
+              </div>
+              <h3 className="text-sm font-semibold text-neutral-900 mb-2">
+                Fund your wallet
+              </h3>
+              <p className="text-xs text-neutral-500 leading-relaxed mb-4">
+                Get 100 free test HBAR from the official Hedera faucet. No real value — just for testing.
+              </p>
+              <a
+                href="https://portal.hedera.com/faucet"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs font-medium text-white bg-neutral-900 px-3 py-2 rounded-lg hover:bg-neutral-800 transition-colors"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M12 6v6l4 2" />
+                </svg>
+                Faucet
+              </a>
+            </div>
+
+            <div className="bg-white border border-neutral-200 rounded-xl p-6">
+              <div className="w-8 h-8 rounded-full bg-neutral-900 text-white text-xs font-bold flex items-center justify-center mb-4">
+                3
+              </div>
+              <h3 className="text-sm font-semibold text-neutral-900 mb-2">
+                Import or create wallet
+              </h3>
+              <p className="text-xs text-neutral-500 leading-relaxed mb-4">
+                Use your existing Hedera account or create a new one in HashPack. Then fund it from the faucet.
+              </p>
+            </div>
+
+            <div className="bg-white border border-neutral-200 rounded-xl p-6">
+              <div className="w-8 h-8 rounded-full bg-neutral-900 text-white text-xs font-bold flex items-center justify-center mb-4">
+                4
+              </div>
+              <h3 className="text-sm font-semibold text-neutral-900 mb-2">
+                Connect &amp; chat
+              </h3>
+              <p className="text-xs text-neutral-500 leading-relaxed mb-4">
+                Enter your Hedera account ID in the demo, set your policies, and start commanding your agents.
+              </p>
+              <a
+                href="/demo"
+                className="inline-flex items-center gap-1.5 text-xs font-medium text-white bg-neutral-900 px-3 py-2 rounded-lg hover:bg-neutral-800 transition-colors"
+              >
+                Launch demo
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M5 12h14" /><path d="m12 5 7 7-7 7" />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+      
       {/* ───── Policy flow ───── */}
       <section className="px-6 py-24 border-t border-neutral-100">
         <div className="max-w-4xl mx-auto text-center">
@@ -133,6 +232,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+
 
       {/* ───── For developers ───── */}
       <section className="px-6 py-24 border-t border-neutral-100 bg-neutral-50/50">

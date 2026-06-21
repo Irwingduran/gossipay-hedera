@@ -1,58 +1,55 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useSession } from '../store'
 
-interface HashPackProvider {
-  connect: () => Promise<{ accountIds: string[] }>
-  disconnect: () => Promise<void>
-  getBalance: (accountId: string) => Promise<{ hbars: number; timestamp: string }>
-  signTransaction: (transaction: Uint8Array) => Promise<Uint8Array>
-}
-
-declare global {
-  interface Window {
-    hashpack?: HashPackProvider
-  }
-}
+let extensionDetected = false
+let listening = false
 
 export function useHashConnect() {
   const { state, dispatch } = useSession()
   const [installed, setInstalled] = useState(false)
-  const [connecting, setConnecting] = useState(false)
+  const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
-    setInstalled(!!window.hashpack)
+    if (listening) return
+    listening = true
+
+    function handleMessage(e: MessageEvent) {
+      if (e.data?.type === 'hashconnect-query-extension-response') {
+        extensionDetected = true
+        setInstalled(true)
+      }
+    }
+
+    window.addEventListener('message', handleMessage)
+    window.postMessage({ type: 'hashconnect-query-extension', id: crypto.randomUUID() }, '*')
+
+    return () => {
+      window.removeEventListener('message', handleMessage)
+      listening = false
+    }
   }, [])
 
-  const connect = useCallback(async () => {
-    if (!window.hashpack) return
-    setConnecting(true)
-    try {
-      const { accountIds } = await window.hashpack.connect()
-      dispatch({ type: 'SET_WALLET', payload: accountIds[0] })
-    } catch (err) {
-      console.error('HashPack connect failed:', err)
-      dispatch({ type: 'SET_WALLET', payload: null })
-    } finally {
-      setConnecting(false)
+  const connect = useCallback(() => {
+    const accountId = inputRef.current?.value?.trim()
+    if (!accountId) return
+    if (!/^\d+\.\d+\.\d+$/.test(accountId)) {
+      alert('Enter a valid Hedera account ID (e.g. 0.0.12345)')
+      return
     }
+    dispatch({ type: 'SET_WALLET', payload: accountId })
   }, [dispatch])
 
-  const disconnect = useCallback(async () => {
-    try {
-      await window.hashpack?.disconnect()
-    } catch {
-      // ignore
-    }
+  const disconnect = useCallback(() => {
     dispatch({ type: 'SET_WALLET', payload: null })
   }, [dispatch])
 
   return {
     connect,
     disconnect,
-    connecting,
     installed,
+    inputRef,
     accountId: state.walletAccountId,
   }
 }
