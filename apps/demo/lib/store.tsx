@@ -22,6 +22,7 @@ interface AppState {
   policies: PolicyConfig[]
   isStreaming: boolean
   error: string | null
+  walletAccountId: string | null
 }
 
 type Action =
@@ -34,6 +35,7 @@ type Action =
   | { type: 'ADD_APPROVAL'; payload: ApprovalRequest }
   | { type: 'UPDATE_APPROVAL'; payload: { id: string; status: ApprovalRequest['status'] } }
   | { type: 'SET_POLICIES'; payload: PolicyConfig[] }
+  | { type: 'SET_WALLET'; payload: string | null }
   | { type: 'RESET_SESSION' }
 
 const initialState: AppState = {
@@ -48,6 +50,7 @@ const initialState: AppState = {
   ],
   isStreaming: false,
   error: null,
+  walletAccountId: null,
 }
 
 function reducer(state: AppState, action: Action): AppState {
@@ -90,8 +93,10 @@ function reducer(state: AppState, action: Action): AppState {
       }
     case 'SET_POLICIES':
       return { ...state, policies: action.payload }
+    case 'SET_WALLET':
+      return { ...state, walletAccountId: action.payload }
     case 'RESET_SESSION':
-      return { ...initialState }
+      return { ...initialState, walletAccountId: state.walletAccountId }
     default:
       return state
   }

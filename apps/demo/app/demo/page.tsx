@@ -7,6 +7,8 @@ import { PolicyPanel } from '@/components/PolicyPanel'
 import { TransactionFeed } from '@/components/TransactionFeed'
 import { AuditTrail } from '@/components/AuditTrail'
 import { ApprovalModal } from '@/components/ApprovalModal'
+import { useHashConnect } from '@/lib/hooks/useHashConnect'
+import { useSession } from '@/lib/store'
 
 type RightTab = 'chat' | 'activity'
 type SideTab = 'policies' | 'audit'
@@ -14,20 +16,55 @@ type SideTab = 'policies' | 'audit'
 export default function DemoPage() {
   const [rightTab, setRightTab] = useState<RightTab>('chat')
   const [sideTab, setSideTab] = useState<SideTab>('policies')
+  const { state } = useSession()
+  const { connect, disconnect, connecting, installed, accountId } = useHashConnect()
 
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-white">
       {/* Top bar */}
       <header className="shrink-0 border-b border-neutral-100 px-6 py-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
+          <a href="/">
           <h1 className="font-serif text-lg tracking-tight text-neutral-900">
             gossipay
           </h1>
+          </a>
           <span className="text-[10px] text-neutral-300 bg-neutral-50 border border-neutral-100 rounded-full px-2 py-0.5">
             mission control
           </span>
         </div>
         <div className="flex items-center gap-3">
+          {/* Wallet connection */}
+          {accountId ? (
+            <button
+              onClick={disconnect}
+              className="flex items-center gap-1.5 text-[11px] text-green-700 bg-green-50 border border-green-100 rounded-full px-3 py-1 hover:bg-green-100 transition-colors"
+            >
+              <span className="w-1.5 h-1.5 bg-green-500 rounded-full" />
+              {accountId.slice(0, 12)}…
+            </button>
+          ) : installed ? (
+            <button
+              onClick={connect}
+              disabled={connecting}
+              className="flex items-center gap-1.5 text-[11px] text-neutral-500 border border-neutral-200 rounded-full px-3 py-1 hover:border-neutral-400 hover:text-neutral-700 transition-colors disabled:opacity-50"
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="2" y="6" width="20" height="12" rx="2" />
+                <circle cx="12" cy="12" r="2" />
+              </svg>
+              {connecting ? 'Connecting…' : 'Connect HashPack'}
+            </button>
+          ) : (
+            <a
+              href="https://www.hashpack.app/download"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[11px] text-amber-600 bg-amber-50 border border-amber-100 rounded-full px-3 py-1 hover:bg-amber-100 transition-colors"
+            >
+              Install HashPack
+            </a>
+          )}
           <span className="flex items-center gap-1.5 text-[11px] text-neutral-400">
             <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
             Hedera testnet
